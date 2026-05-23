@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         app = new AppController(this);
+        setContentView(R.layout.view_main);
         app.init();
     }
 
@@ -27,5 +28,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void logcat(String log) {
         Log.i("LogcatGeneric", log);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!app.getUi().back()) {
+            super.onBackPressed(); // exits app
+        }
     }
 }

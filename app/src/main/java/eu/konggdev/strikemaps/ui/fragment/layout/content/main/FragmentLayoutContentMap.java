@@ -2,13 +2,11 @@ package eu.konggdev.strikemaps.ui.fragment.layout.content.main;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
-import eu.konggdev.strikemaps.ui.element.UIRegion;
-
 import eu.konggdev.strikemaps.R;
 
 public class FragmentLayoutContentMap extends Fragment implements MainContentLayout {
@@ -28,6 +26,7 @@ public class FragmentLayoutContentMap extends Fragment implements MainContentLay
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         LinearLayout layout = (LinearLayout) view;
+        if(mapView.getParent() != null) ((ViewGroup) mapView.getParent()).removeView(mapView);
         layout.addView(mapView);
     }
 }

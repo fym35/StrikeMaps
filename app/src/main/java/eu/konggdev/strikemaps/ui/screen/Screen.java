@@ -3,26 +3,21 @@ package eu.konggdev.strikemaps.ui.screen;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import java.util.List;
 import java.util.Map;
 
-import eu.konggdev.strikemaps.R;
 import eu.konggdev.strikemaps.app.AppController;
 import eu.konggdev.strikemaps.ui.fragment.ContainerFragment;
+import eu.konggdev.strikemaps.ui.fragment.FragmentEmptyPlaceholder;
 import eu.konggdev.strikemaps.ui.fragment.layout.content.main.MainContentLayout;
 import eu.konggdev.strikemaps.ui.fragment.popup.Popup;
-import eu.konggdev.strikemaps.ui.element.UIRegion;
+import eu.konggdev.strikemaps.ui.element.region.UIRegion;
 
 public class Screen {
     @NonNull AppController app;
-    public Screen(AppController app, MainContentLayout mainContent, Map<Integer, UIRegion> regions, Integer layout) {
+    public Screen(AppController app, Map<Integer, UIRegion> regions) {
         this.app = app;
-        this.layout = layout;
-        this.mainContent = mainContent;
         this.uiRegions = regions;
     }
-
-    private final Integer layout;
 
     private MainContentLayout mainContent;
 
@@ -68,10 +63,10 @@ public class Screen {
     }
 
     public void attachAll() {
-        app.getActivity().setContentView(layout);
-        fragmentTransaction(R.id.mainContentView, mainContent.toFragment());
-        for (UIRegion region : uiRegions.values()) {
-            setFragment(region, region.getFragment());
-        }
+        for (UIRegion region : uiRegions.values()) setFragment(region, region.getFragment());
+    }
+
+    public void detachAll() {
+        for (UIRegion region : uiRegions.values()) fragmentTransaction(region.layoutId, new FragmentEmptyPlaceholder());
     }
 }

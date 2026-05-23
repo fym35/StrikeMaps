@@ -4,7 +4,6 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.fragment.app.Fragment;
-import eu.konggdev.strikemaps.ui.element.UIRegion;
 
 public interface ContainerFragment {
     abstract public Integer getRegion();

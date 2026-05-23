@@ -7,6 +7,7 @@ import eu.konggdev.strikemaps.MainActivity;
 import eu.konggdev.strikemaps.R;
 import eu.konggdev.strikemaps.map.MapComponent;
 import eu.konggdev.strikemaps.ui.UIComponent;
+import eu.konggdev.strikemaps.ui.screen.definition.DefinedScreen;
 
 import static android.content.Context.MODE_PRIVATE;
 public class AppController {
@@ -39,7 +40,7 @@ public class AppController {
         if(map == null) map = new MapComponent(this);
         if(ui == null) {
             ui = new UIComponent(this, map);
-            ui.swapScreen(R.layout.screen_main); //Initial
+            ui.swapScreen(DefinedScreen.MAIN); //Initial
         }
     }
 }

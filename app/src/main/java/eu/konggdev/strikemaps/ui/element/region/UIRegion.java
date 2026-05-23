@@ -1,4 +1,4 @@
-package eu.konggdev.strikemaps.ui.element;
+package eu.konggdev.strikemaps.ui.element.region;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -40,5 +40,4 @@ public class UIRegion {
             currentFragment = stockFragment;
         }
     }
-
 }
