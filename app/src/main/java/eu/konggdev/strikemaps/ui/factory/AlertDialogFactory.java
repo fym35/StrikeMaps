@@ -38,4 +38,11 @@ public final class AlertDialogFactory {
 
         return dialog;
     }
+
+    public static AlertDialog searchSettings(AppController app) {
+        return new AlertDialog.Builder(app.getActivity())
+                .setTitle("Configure Search")
+                .setPositiveButton("OK", null)
+                .create();
+    }
 }

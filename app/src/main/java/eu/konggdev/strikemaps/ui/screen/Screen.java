@@ -2,25 +2,24 @@ package eu.konggdev.strikemaps.ui.screen;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.Toolbar;
 
 import java.util.Map;
 
 import eu.konggdev.strikemaps.app.AppController;
 import eu.konggdev.strikemaps.ui.fragment.ContainerFragment;
 import eu.konggdev.strikemaps.ui.fragment.FragmentEmptyPlaceholder;
-import eu.konggdev.strikemaps.ui.fragment.layout.content.main.MainContentLayout;
 import eu.konggdev.strikemaps.ui.fragment.popup.Popup;
 import eu.konggdev.strikemaps.ui.element.region.UIRegion;
 
 public class Screen {
     @NonNull AppController app;
-    public Screen(AppController app, Map<Integer, UIRegion> regions) {
+    Toolbar supportBar;
+    public Screen(AppController app, Map<Integer, UIRegion> regions, Toolbar supportBar) {
         this.app = app;
         this.uiRegions = regions;
+        this.supportBar = supportBar;
     }
-
-    private MainContentLayout mainContent;
-
     Map<Integer, UIRegion> uiRegions;
     public Integer popup;
 

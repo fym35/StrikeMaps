@@ -3,6 +3,7 @@ package eu.konggdev.strikemaps.ui;
 import android.app.AlertDialog;
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import eu.konggdev.strikemaps.Component;
 import eu.konggdev.strikemaps.R;
 import eu.konggdev.strikemaps.app.AppController;
@@ -41,7 +42,8 @@ public class UIComponent implements Component {
                                 R.id.mainContentView, new MainContentRegion(map.toFragment(), R.id.mainContentView),
                                 R.id.bottomUi, new UIRegion(new FragmentLayoutControls(app, R.id.bottomUi), R.id.bottomUi),
                                 R.id.topUi, new UIRegion(new FragmentLayoutSearch(app, R.id.topUi), R.id.topUi)
-                        ) //TODO: Probably stop referencing layout 3(!) times everytime
+                        ), //TODO: Probably stop referencing layout 3(!) times everytime
+                        null
                 ),
                 //Settings screen
                 DefinedScreen.SETTINGS, new Screen(
@@ -49,7 +51,8 @@ public class UIComponent implements Component {
                         //Just the settings content fragment
                         Map.of(
                                 R.id.mainContentView, new MainContentRegion(new FragmentLayoutContentSettings(), R.id.mainContentView)
-                        )
+                        ),
+                        new Toolbar(app.getActivity())
                 )
         );
     }

@@ -1,29 +1,24 @@
 package eu.konggdev.strikemaps.ui.fragment.layout;
 
-import android.Manifest;
 import android.app.AlertDialog;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 
+import android.view.ViewGroup;
+import android.widget.PopupWindow;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.PopupMenu;
 
 import eu.konggdev.strikemaps.R;
 import eu.konggdev.strikemaps.app.AppController;
-import eu.konggdev.strikemaps.data.helper.UserPrefsHelper;
-import eu.konggdev.strikemaps.map.overlay.implementation.LocationOverlay;
-import eu.konggdev.strikemaps.ui.fragment.popup.FragmentMapChangePopup;
+import eu.konggdev.strikemaps.ui.factory.AlertDialogFactory;
 import eu.konggdev.strikemaps.ui.screen.definition.DefinedScreen;
 
 public class FragmentLayoutSearch extends Fragment implements Layout {
     AppController app;
-    View rootView;
-
     private final Integer region;
 
     public FragmentLayoutSearch(AppController app, Integer region) {
@@ -45,7 +40,50 @@ public class FragmentLayoutSearch extends Fragment implements Layout {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //TODO: Make a floating menu instead of going right in settings
-        setupButton(view, R.id.hamburgerButton, click(() -> app.getUi().swapScreen(DefinedScreen.SETTINGS)));
+
+        setupButton(view, R.id.hamburgerButton, click(() -> {
+
+            View menuView = getLayoutInflater().inflate(R.layout.menu_dropdown, null);
+
+            PopupWindow popupWindow = new PopupWindow(
+                    menuView,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    true
+            );
+
+            popupWindow.setOutsideTouchable(true);
+            popupWindow.setFocusable(true);
+            popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+            setupButton(menuView, R.id.menuSearchSettings, click(() -> {
+                app.getUi().alert(AlertDialogFactory.searchSettings(app));
+            }));
+
+            setupButton(menuView, R.id.menuSettings, click(() -> {
+                popupWindow.dismiss();
+                app.getUi().swapScreen(DefinedScreen.SETTINGS);
+            }));
+
+            menuView.findViewById(R.id.menuSearchSettings).setOnClickListener(v -> popupWindow.dismiss());
+            menuView.findViewById(R.id.menuAbout).setOnClickListener(v -> popupWindow.dismiss());
+
+            View anchor = view.findViewById(R.id.searchContainer);
+
+            anchor.post(() -> {
+
+                menuView.measure(
+                        View.MeasureSpec.UNSPECIFIED,
+                        View.MeasureSpec.UNSPECIFIED
+                );
+
+                int popupWidth = menuView.getMeasuredWidth();
+                int containerWidth = anchor.getWidth();
+
+                int xOffset = containerWidth - popupWidth;
+                popupWindow.showAsDropDown(anchor, xOffset, 1);
+            });
+
+        }));
     }
 }

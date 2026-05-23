@@ -34,9 +34,6 @@ public class AppController {
     }
     public AppCompatActivity getActivity() { return appActivity; }
     public void init() {
-        if (getActivity().getSupportActionBar() != null)
-            getActivity().getSupportActionBar().hide();
-
         if(map == null) map = new MapComponent(this);
         if(ui == null) {
             ui = new UIComponent(this, map);
