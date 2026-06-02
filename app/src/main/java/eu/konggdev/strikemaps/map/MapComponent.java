@@ -1,7 +1,11 @@
 package eu.konggdev.strikemaps.map;
 
 import java.util.*;
+
+import android.widget.Toast;
+import android.widget.Toolbar;
 import eu.konggdev.strikemaps.Component;
+import eu.konggdev.strikemaps.map.renderer.implementation.MapLibreGLJSRenderer;
 import eu.konggdev.strikemaps.ui.factory.AlertDialogFactory;
 import eu.konggdev.strikemaps.data.helper.UserPrefsHelper;
 import eu.konggdev.strikemaps.map.renderer.implementation.VtmRenderer;
@@ -24,11 +28,17 @@ public class MapComponent implements Component  {
     public MapComponent(AppController ref) {
         this.app = ref;
         switch(UserPrefsHelper.mapRenderer(app.getPrefs())) {
-            case "vtm":
+            case 0:
+                this.mapRenderer = new MapLibreNativeRenderer(app, this);
+                break;
+            case 1:
+                this.mapRenderer = new MapLibreGLJSRenderer(app, this);
+                break;
+            case 2:
                 this.mapRenderer = new VtmRenderer(app, this);
                 break;
-            case "mapLibre":
-            default: //This shouldn't happen
+           default: //This shouldn't happen
+                Toast.makeText(app.getActivity(), "Invalid renderer value in preferences\nFalling back to MapLibre Native", Toast.LENGTH_SHORT).show();
                 this.mapRenderer = new MapLibreNativeRenderer(app, this);
                 break;
         };

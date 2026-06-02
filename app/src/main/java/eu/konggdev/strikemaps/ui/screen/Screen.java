@@ -1,5 +1,6 @@
 package eu.konggdev.strikemaps.ui.screen;
 
+import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.widget.Toolbar;
@@ -14,11 +15,10 @@ import eu.konggdev.strikemaps.ui.element.region.UIRegion;
 
 public class Screen {
     @NonNull AppController app;
-    Toolbar supportBar;
-    public Screen(AppController app, Map<Integer, UIRegion> regions, Toolbar supportBar) {
+    Toolbar toolbar;
+    public Screen(AppController app, Map<Integer, UIRegion> regions) {
         this.app = app;
         this.uiRegions = regions;
-        this.supportBar = supportBar;
     }
     Map<Integer, UIRegion> uiRegions;
     public Integer popup;

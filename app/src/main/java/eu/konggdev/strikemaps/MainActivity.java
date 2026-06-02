@@ -32,8 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (!app.getUi().back()) {
-            super.onBackPressed(); // exits app
-        }
+        if (!app.getUi().back())
+            super.onBackPressed();
     }
 }

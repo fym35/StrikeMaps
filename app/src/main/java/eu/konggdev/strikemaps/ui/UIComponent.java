@@ -42,17 +42,15 @@ public class UIComponent implements Component {
                                 R.id.mainContentView, new MainContentRegion(map.toFragment(), R.id.mainContentView),
                                 R.id.bottomUi, new UIRegion(new FragmentLayoutControls(app, R.id.bottomUi), R.id.bottomUi),
                                 R.id.topUi, new UIRegion(new FragmentLayoutSearch(app, R.id.topUi), R.id.topUi)
-                        ), //TODO: Probably stop referencing layout 3(!) times everytime
-                        null
+                        ) //TODO: Probably stop referencing layout 3(!) times everytime
                 ),
                 //Settings screen
                 DefinedScreen.SETTINGS, new Screen(
                         app,
                         //Just the settings content fragment
                         Map.of(
-                                R.id.mainContentView, new MainContentRegion(new FragmentLayoutContentSettings(), R.id.mainContentView)
-                        ),
-                        new Toolbar(app.getActivity())
+                                R.id.mainContentView, new MainContentRegion(new FragmentLayoutContentSettings(app), R.id.mainContentView)
+                        )
                 )
         );
     }

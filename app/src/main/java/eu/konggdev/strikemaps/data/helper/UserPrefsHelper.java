@@ -13,17 +13,24 @@ public final class UserPrefsHelper {
 
     //Defaults
     private static final String DEFAULT_MAP_STYLE = "bundled/style/classic.style.json";
-    private static final String DEFAULT_MAP_RENDERER = "mapLibre";
+    private static final Integer DEFAULT_MAP_RENDERER = 0;
     private static final boolean DEFAULT_PERSIST_LOCATION_ENABLED = true;
     private static final boolean DEFAULT_LAST_LOCATION_ENABLED = false;
-
 
     public static String startupMapStyle(SharedPreferences prefs) {
         return prefs.getString(KEY_STARTUP_MAP_STYLE, DEFAULT_MAP_STYLE);
     }
 
-    public static String mapRenderer(SharedPreferences prefs) {
-        return prefs.getString(KEY_MAP_RENDERER, DEFAULT_MAP_RENDERER);
+    public static boolean startupMapStyle(SharedPreferences prefs, String updated) {
+        return prefs.edit().putString(KEY_STARTUP_MAP_STYLE, updated).commit();
+    }
+
+    public static Integer mapRenderer(SharedPreferences prefs) {
+        return prefs.getInt(KEY_MAP_RENDERER, DEFAULT_MAP_RENDERER);
+    }
+
+    public static boolean mapRenderer(SharedPreferences prefs, Integer updated) {
+        return prefs.edit().putInt(KEY_MAP_RENDERER, updated).commit();
     }
 
     public static boolean persistLocationEnabled(SharedPreferences prefs) {

@@ -7,4 +7,24 @@
         android:padding="24dp"
         android:background="@android:color/background_dark">
 
+    <TextView
+            android:id="@+id/mapRendererLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Map Renderer:"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/mapRendererSelector"/>
+
+    <Spinner
+            android:id="@+id/mapRendererSelector"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            app:layout_constraintStart_toEndOf="@id/mapRendererLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
