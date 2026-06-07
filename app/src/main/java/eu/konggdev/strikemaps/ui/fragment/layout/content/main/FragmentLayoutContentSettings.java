@@ -14,6 +14,8 @@ import com.google.android.material.appbar.MaterialToolbar;
 import eu.konggdev.strikemaps.R;
 import eu.konggdev.strikemaps.data.helper.UserPrefsHelper;
 import eu.konggdev.strikemaps.app.AppController;
+import eu.konggdev.strikemaps.map.MapComponent;
+import eu.konggdev.strikemaps.ui.factory.AlertDialogFactory;
 
 import java.util.Arrays;
 
@@ -42,11 +44,18 @@ public class FragmentLayoutContentSettings extends Fragment implements MainConte
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mapRendererSelector.setAdapter(adapter);
         mapRendererSelector.setSelection(UserPrefsHelper.mapRenderer(app.getPrefs()));
+        final boolean[] ignoreFirst = {true};
         mapRendererSelector.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        if (ignoreFirst[0]) {
+                            ignoreFirst[0] = false;
+                            return;
+                        }
+
                         UserPrefsHelper.mapRenderer(app.getPrefs(), position);
+                        app.getUi().alert(AlertDialogFactory.restartDialog(app));
                     }
 
                     @Override

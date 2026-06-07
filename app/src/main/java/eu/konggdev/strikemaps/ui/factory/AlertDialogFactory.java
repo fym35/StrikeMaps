@@ -1,11 +1,13 @@
 package eu.konggdev.strikemaps.ui.factory;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 import eu.konggdev.strikemaps.app.AppController;
 import eu.konggdev.strikemaps.ui.element.item.PreviewItem;
 import org.maplibre.geojson.Feature;
@@ -43,6 +45,29 @@ public final class AlertDialogFactory {
         return new AlertDialog.Builder(app.getActivity())
                 .setTitle("Configure Search")
                 .setPositiveButton("OK", null)
+                .create();
+    }
+
+    public static AlertDialog restartDialog(AppController app) {
+        return new AlertDialog.Builder(app.getActivity())
+                .setTitle("Restart required")
+                .setMessage("Restart the app to apply changes.")
+                .setCancelable(false)
+                .setNegativeButton("Cancel", (d, w) -> {
+                    Toast.makeText(app.getActivity(),
+                            "Changes will be applied on next restart",
+                            Toast.LENGTH_SHORT).show();
+                    d.dismiss();
+                })
+                .setPositiveButton("Restart", (d, w) -> {
+                    Intent i = app.getActivity().getPackageManager()
+                            .getLaunchIntentForPackage(app.getActivity().getPackageName());
+                    if (i != null) {
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        app.getActivity().startActivity(i);
+                    }
+                    Runtime.getRuntime().exit(0);
+                })
                 .create();
     }
 }

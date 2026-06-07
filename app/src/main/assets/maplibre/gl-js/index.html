@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet"/>
+    <style>
+        html, body, #map {
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="map" style="width: 100%; height: 100%"></div>
+<script>
+    const map = new maplibregl.Map({
+      center: [13.388, 52.517],
+      zoom: 9.5,
+      container: 'map',
+    })
+
+    window.setMapStyle = function(styleUrl) {
+        if (!map) return;
+        map.setStyle(styleUrl);
+    };
+</script>
+
+</body>
+</html>
