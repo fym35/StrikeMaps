@@ -1,5 +1,9 @@
-All files inside the /dist folder are under the following license
+#
+Builds included inside /dist correspond to MapLibre GL JS version 5.24.0
+The source for these builds is available on https://github.com/maplibre/maplibre-gl-js
+#
 
+All files inside the /dist folder are under the following license
 
 -------------------------------------------------------------------------------
 
