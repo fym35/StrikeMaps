@@ -5,12 +5,13 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import eu.konggdev.strikemaps.app.util.JsonPatcher;
 import eu.konggdev.strikemaps.data.helper.UserPrefsHelper;
 import eu.konggdev.strikemaps.map.overlay.MapOverlay;
-import eu.konggdev.strikemaps.map.layer.SourcedMapLayer;
 import eu.konggdev.strikemaps.map.renderer.MapRenderer;
 import eu.konggdev.strikemaps.map.style.MapStyle;
 import org.maplibre.android.MapLibre;
@@ -27,10 +28,12 @@ import eu.konggdev.strikemaps.app.AppController;
 import eu.konggdev.strikemaps.map.MapComponent;
 
 public class MapLibreNativeRenderer implements MapRenderer, OnMapReadyCallback {
-    AppController app;
-    MapComponent controller;
+    @NonNull AppController app;
+    @NonNull MapComponent controller;
     MapLibreMap map;
     final MapView mapView;
+
+    private JsonNode origin;
 
     public MapLibreNativeRenderer(AppController app, MapComponent controller) {
         this.app = app;
@@ -42,37 +45,69 @@ public class MapLibreNativeRenderer implements MapRenderer, OnMapReadyCallback {
     }
 
     @Override
-    public void reload() {
+    public void styleUpdate(MapStyle style) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-        MapStyle style = controller.style;
+
+        //Thanks to this, styleUpdate(null) can be used as an origin reload
+        if (style != null) {
+            try {
+                ObjectNode root = style.metadata.deepCopy();
+
+                //Sources
+                ObjectNode sources = mapper.createObjectNode();
+                style.sources.forEach((k, v) -> sources.set(k, mapper.valueToTree(v)));
+
+                //Layers
+                ArrayNode layers = mapper.createArrayNode();
+                layers.addAll((ArrayNode) style.layerDefinitions);
+
+                //Set all to root
+                root.set("sources", sources);
+                root.set("layers", layers);
+                this.origin = root;
+            } catch (Exception e) {
+                app.logcat("Failed to parse style: " + style.name);
+                e.printStackTrace();
+            }
+        }
+
         try {
-	        /* Take metadata from MapStyle
-	        everything outside sources, layers */
-            ObjectNode root = style.metadata.deepCopy();
-            
-    	    //Sources
-            ObjectNode sources = mapper.createObjectNode();
-            style.sources.forEach((k, v) -> sources.set(k, mapper.valueToTree(v)));
-
-	        //Layers
-	        ArrayNode layers = mapper.createArrayNode();
-    	    layers.addAll((ArrayNode) style.layerDefinitions);
-
-	        //Overlays
-	        for (MapOverlay overlay : controller.overlays.values()) {
-                SourcedMapLayer overlayLayer = overlay.makeLayer();
-		        sources.set(overlayLayer.key, mapper.valueToTree(overlayLayer.source));
-		        layers.addAll((ArrayNode) overlayLayer.layer);
-	        }
-
-            //Set all to root
-	        root.set("sources", sources);
-  	        root.set("layers", layers);
-
-            map.setStyle(new Style.Builder().fromJson(mapper.writeValueAsString(root)));
+            map.setStyle(new Style.Builder().fromJson(mapper.writeValueAsString(origin)));
         } catch (Exception e) {
-	    app.logcat("Failed to reload Map");
+            app.logcat("Failed to set style: " + style.name);
+            e.printStackTrace();
+        }
+
+        //Since we just annihilated all overlays from the face of the earth, lets repatch them
+        if (controller.overlays != null) {
+            for(MapOverlay overlay : controller.overlays.values())
+                overlayUpdate(overlay);
+        }
+    }
+
+    @Override
+    public void overlayUpdate(MapOverlay overlay) {
+        if(map == null) return;
+
+        Style style = map.getStyle();
+        ObjectMapper mapper = new ObjectMapper();
+
+        if(style == null) return;
+
+        try {
+            JsonNode current = mapper.readTree(style.getJson());
+
+            JsonNode merged;
+            if (controller.hasOverlay(overlay)) {
+                merged = JsonPatcher.patch(current, overlay.makePatch());
+            } else {
+                merged = JsonPatcher.unpatch(origin, current, overlay.makePatch());
+            }
+
+            map.setStyle(new Style.Builder().fromJson(mapper.writeValueAsString(merged)));
+        } catch (Exception e) {
+            app.logcat("Failed to patch overlay: " + overlay.toString());
             e.printStackTrace();
         }
     }
@@ -91,7 +126,7 @@ public class MapLibreNativeRenderer implements MapRenderer, OnMapReadyCallback {
     public void onMapReady(@NonNull MapLibreMap maplibreMap) {
         this.map = maplibreMap;
 
-        controller.setStyle(MapStyle.fromMapLibreJsonFile(UserPrefsHelper.startupMapStyle(app.getPrefs()), app));
+        controller.setStyle(MapStyle.fromJsonFile(UserPrefsHelper.startupMapStyle(app.getPrefs()), app));
 
         //I have my own implementation of attribution that credits MapLibre among others, it's not as bad as it looks :)
         map.getUiSettings().setLogoEnabled(false);

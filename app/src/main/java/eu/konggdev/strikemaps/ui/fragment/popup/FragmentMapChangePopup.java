@@ -56,6 +56,6 @@ public class FragmentMapChangePopup extends Fragment implements Popup {
         stylePaths.addAll(Arrays.asList(FileHelper.getUserFiles("style", ".style.json", app)));
         LinearLayout stylesLayout = view.findViewById(R.id.stylesLayout);
         for (String style : stylePaths)
-            stylesLayout.addView(GenericItem.fromStyle(MapStyle.fromMapLibreJsonFile(style, app), map).makeView(ui));
+            stylesLayout.addView(GenericItem.fromStyle(MapStyle.fromJsonFile(style, app), map).makeView(ui));
     }
 }

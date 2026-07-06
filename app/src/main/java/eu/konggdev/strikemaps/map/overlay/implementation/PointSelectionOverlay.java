@@ -1,12 +1,11 @@
 package eu.konggdev.strikemaps.map.overlay.implementation;
 
-import eu.konggdev.strikemaps.map.layer.MapLayer;
-import eu.konggdev.strikemaps.map.layer.SourcedMapLayer;
+import com.fasterxml.jackson.databind.JsonNode;
 import eu.konggdev.strikemaps.map.overlay.MapOverlay;
 
 public class PointSelectionOverlay implements MapOverlay {
     @Override
-    public SourcedMapLayer makeLayer() {
+    public JsonNode makePatch() {
         return null;
     }
 }

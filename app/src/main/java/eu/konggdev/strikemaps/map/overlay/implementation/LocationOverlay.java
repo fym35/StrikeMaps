@@ -1,19 +1,15 @@
 package eu.konggdev.strikemaps.map.overlay.implementation;
 
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import androidx.annotation.NonNull;
+import com.fasterxml.jackson.databind.JsonNode;
 import eu.konggdev.strikemaps.app.AppController;
 import eu.konggdev.strikemaps.map.MapComponent;
-import eu.konggdev.strikemaps.map.layer.SourcedMapLayer;
 import eu.konggdev.strikemaps.map.overlay.MapOverlay;
 import eu.konggdev.strikemaps.map.source.MapSource;
 
 import eu.konggdev.strikemaps.data.provider.LocationDataProvider;
-import org.maplibre.geojson.Feature;
-import org.maplibre.geojson.FeatureCollection;
-import org.maplibre.geojson.Point;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -32,61 +28,61 @@ public class LocationOverlay implements MapOverlay, LocationListener {
         this.locationDataProvider = new LocationDataProvider(app.getActivity(), this);
     }
 
-    @Override
-    public SourcedMapLayer makeLayer() {
-	MapSource source = new MapSource();
+	@Override
+	public JsonNode makePatch() {
+		ObjectMapper mapper = new ObjectMapper();
 
-	source.type = "geojson";
+		ObjectNode root = mapper.createObjectNode();
 
-	ObjectMapper mapper = new ObjectMapper();
-	try {
-	    ObjectNode data = mapper.createObjectNode();
-	    data.put("type", "Feature");
+		ObjectNode sources = mapper.createObjectNode();
+		ObjectNode location = mapper.createObjectNode();
+		ObjectNode data = mapper.createObjectNode();
+		ObjectNode geometry = mapper.createObjectNode();
+		ObjectNode properties = mapper.createObjectNode();
 
-	    if(currentLocation != null) {
-	       ObjectNode geometry = mapper.createObjectNode();
-               geometry.put("type", "Point");
+		ArrayNode coordinates = mapper.createArrayNode();
+		coordinates.add(currentLocation.getLongitude());
+		coordinates.add(currentLocation.getLatitude());
 
-	       ArrayNode coordinates = mapper.createArrayNode();
-	       coordinates.add(currentLocation.getLongitude());
-	       coordinates.add(currentLocation.getLatitude());
+		geometry.put("type", "Point");
+		geometry.set("coordinates", coordinates);
 
-	       geometry.set("coordinates", coordinates);
-	       data.set("geometry", geometry);
-	       data.set("properties", mapper.createObjectNode());
-	    }
-	    source.data = data;
-	} catch (Exception e) {
-	    e.printStackTrace();
+		data.put("type", "Feature");
+		data.set("geometry", geometry);
+		data.set("properties", properties);
+
+		location.put("type", "geojson");
+		location.set("data", data);
+
+		sources.set("location", location);
+		root.set("sources", sources);
+
+		// layers
+		ArrayNode layers = mapper.createArrayNode();
+		ObjectNode layer = mapper.createObjectNode();
+
+		layer.put("id", "location");
+		layer.put("type", "circle");
+		layer.put("source", "location");
+
+		ObjectNode paint = mapper.createObjectNode();
+		paint.put("circle-radius", 5);
+		paint.put("circle-color", "#1E88E5");
+
+		paint.put("circle-stroke-color", "#FFFFFF");
+		paint.put("circle-stroke-width", 1.5);
+
+		layer.set("paint", paint);
+
+		layers.add(layer);
+		root.set("layers", layers);
+
+		return root;
 	}
-
-	ObjectNode layer = mapper.createObjectNode();
-	layer.put("id", "location");
-	layer.put("type", "circle");
-	layer.put("source", "location");
-
-	ObjectNode paint = mapper.createObjectNode();
-	paint.put("circle-radius", 5);
-	paint.put("circle-color", "#1E88E5");
-	paint.put("circle-stroke-color", "#FFFFFF");
-	paint.put("circle-stroke-width", 1.5);
-
-	layer.set("paint", paint);
-
-	ObjectNode layout = mapper.createObjectNode();
-	layout.put("circle-pitch-alignment", "map");
-
-	layer.set("layout", layout);
-	
-	ArrayNode layers = mapper.createArrayNode();
-	layers.add(layer);
-
-        return new SourcedMapLayer("location", source, layers);
-    }
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
         this.currentLocation = location;
-        map.onOverlayUpdate();
+        map.overlayUpdate(this);
     }
 }

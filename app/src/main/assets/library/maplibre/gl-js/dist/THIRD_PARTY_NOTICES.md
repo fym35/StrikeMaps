@@ -1,5 +1,5 @@
 #
-Builds included inside /dist correspond to MapLibre GL JS version 5.24.0
+Builds included inside /dist correspond to MapLibre GL JS version 5.24.0 <br>
 The source for these builds is available on https://github.com/maplibre/maplibre-gl-js
 #
 

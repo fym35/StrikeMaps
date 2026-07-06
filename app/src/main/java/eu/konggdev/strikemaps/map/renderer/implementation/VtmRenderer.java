@@ -3,7 +3,9 @@ package eu.konggdev.strikemaps.map.renderer.implementation;
 import android.view.View;
 import eu.konggdev.strikemaps.app.AppController;
 import eu.konggdev.strikemaps.map.MapComponent;
+import eu.konggdev.strikemaps.map.overlay.MapOverlay;
 import eu.konggdev.strikemaps.map.renderer.MapRenderer;
+import eu.konggdev.strikemaps.map.style.MapStyle;
 import okhttp3.OkHttpClient;
 import org.maplibre.android.geometry.LatLng;
 import org.maplibre.geojson.Feature;
@@ -16,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class VtmRenderer implements MapRenderer {
+
     AppController app;
     MapComponent controller;
 
@@ -30,7 +33,12 @@ public class VtmRenderer implements MapRenderer {
     }
 
     @Override
-    public void reload() {
+    public void overlayUpdate(MapOverlay overlay) {
+        //TODO
+    }
+
+    @Override
+    public void styleUpdate(MapStyle style) {
         //TODO
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         OSciMap4TileSource tileSource = OSciMap4TileSource.builder().httpFactory(new OkHttpEngine.OkHttpFactory(builder)).build();

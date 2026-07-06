@@ -20,10 +20,10 @@ public class MapStyle {
 
     public JsonNode metadata; // everything except layers + sources
     public Map<String, MapSource> sources;
-    public ArrayNode layerDefinitions;  // the "layers" array
+    public ArrayNode layerDefinitions;  // "layers" array
 
     //FIXME
-    public static MapStyle fromMapLibreJsonFile(String filename, AppController app) {
+    public static MapStyle fromJsonFile(String filename, AppController app) {
         String styleContents;
         if (filename.startsWith("/storage")) styleContents = FileHelper.loadStringFromUserFile(filename);
         else styleContents = FileHelper.loadStringFromAssetFile(filename, app);

@@ -2,10 +2,10 @@
     <string name="app_name">Strike Maps</string>
     <string name="settings_title">Settings</string>
     <string name="attribution_title"> Attribution </string>
-    <string name="shipped_attribution">Earth map data Included;\n   - © OpenStreetMap Contributors\nMap Rendering libraries Included;\n   - MapLibre developed by MapLibre Organization\n   - Vtm developed by Mapsforge\nStrike Maps made with &lt;3 by konggdev</string>
+    <string name="shipped_attribution">Map Rendering libraries Included;\n   - MapLibre developed by MapLibre Organization\n   - Vtm developed by Mapsforge\nStrike Maps made with &lt;3 by konggdev</string>
     <string-array name="map_renderers">
-        <item>MapLibre Native</item>
         <item>MapLibre GL JS</item>
+        <item>MapLibre Native</item>
         <item>VTM</item>
     </string-array>
 </resources>

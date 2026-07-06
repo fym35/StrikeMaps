@@ -3,7 +3,6 @@ package eu.konggdev.strikemaps.map;
 import java.util.*;
 
 import android.widget.Toast;
-import android.widget.Toolbar;
 import eu.konggdev.strikemaps.Component;
 import eu.konggdev.strikemaps.map.renderer.implementation.MapLibreGLJSRenderer;
 import eu.konggdev.strikemaps.ui.factory.AlertDialogFactory;
@@ -19,27 +18,28 @@ import eu.konggdev.strikemaps.map.renderer.implementation.MapLibreNativeRenderer
 import eu.konggdev.strikemaps.map.renderer.MapRenderer;
 import eu.konggdev.strikemaps.ui.fragment.layout.content.main.FragmentLayoutContentMap;
 
-public class MapComponent implements Component  {
+public class MapComponent implements Component {
     MapRenderer mapRenderer;
     AppController app;
 
     public MapStyle style;
     public Map<Class<? extends MapOverlay>, MapOverlay> overlays = new HashMap<>();
+
     public MapComponent(AppController ref) {
         this.app = ref;
         switch(UserPrefsHelper.mapRenderer(app.getPrefs())) {
             case 0:
-                this.mapRenderer = new MapLibreNativeRenderer(app, this);
+                this.mapRenderer = new MapLibreGLJSRenderer(app, this);
                 break;
             case 1:
-                this.mapRenderer = new MapLibreGLJSRenderer(app, this);
+                this.mapRenderer = new MapLibreNativeRenderer(app, this);
                 break;
             case 2:
                 this.mapRenderer = new VtmRenderer(app, this);
                 break;
-           default: //This shouldn't happen
-                Toast.makeText(app.getActivity(), "Invalid renderer value in preferences\nFalling back to MapLibre Native", Toast.LENGTH_SHORT).show();
-                this.mapRenderer = new MapLibreNativeRenderer(app, this);
+            default: //This shouldn't happen
+                Toast.makeText(app.getActivity(), "Invalid renderer value in preferences\nFalling back to MapLibre GL JS", Toast.LENGTH_SHORT).show();
+                this.mapRenderer = new MapLibreGLJSRenderer(app, this);
                 break;
         };
     }
@@ -50,13 +50,13 @@ public class MapComponent implements Component  {
 
     public void setStyle(MapStyle style) {
         this.style = style;
-        mapRenderer.reload();
+        mapRenderer.styleUpdate(style);
     }
 
     public void switchOverlay(MapOverlay overlay) {
         if (hasOverlay(overlay)) overlays.remove(overlay.getClass());
         else overlays.put(overlay.getClass(), overlay);
-        update();
+        overlayUpdate(overlay);
     }
 
     public boolean hasOverlay(MapOverlay overlay) {
@@ -71,12 +71,8 @@ public class MapComponent implements Component  {
         //FIXME: Put back FragmentPointPreviewPopup (private code atm)
     }
 
-    public void onOverlayUpdate() {
-        update();
-    }
-
-    public void update() {
-        if(mapRenderer != null && style != null) mapRenderer.reload();
+    public void overlayUpdate(MapOverlay in) {
+        mapRenderer.overlayUpdate(in);
     }
 
     public boolean onMapClick(LatLng point) {
