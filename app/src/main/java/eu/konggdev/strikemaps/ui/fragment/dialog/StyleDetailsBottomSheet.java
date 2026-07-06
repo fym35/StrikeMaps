@@ -139,7 +139,6 @@ public class StyleDetailsBottomSheet extends BottomSheetDialogFragment {
             styleTypeView.setText("User Style");
         }
 
-
         editButtonLayout.setOnClickListener(v ->  Toast.makeText(requireContext(), "Editor not implemented yet\nWait for release", Toast.LENGTH_SHORT).show());
         copyButtonLayout.setOnClickListener(v -> ui.alert(AlertDialogFactory.createStyle(app, getContents(), mapChangePopup)));
         exportButtonLayout.setOnClickListener(v -> showExportDialog(fileName));

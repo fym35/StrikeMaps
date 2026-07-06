@@ -195,7 +195,7 @@ public final class AlertDialogFactory {
                     }
 
                         if (FileHelper.userFileExists("style", fileName, app)) {
-                            app.getUi().alert(askUserOverwriteFile(app, fileName, "style", mapper.writeValueAsString(root), dialog));
+                            app.getUi().alert(askUserOverwriteFile(app, fileName, "style", mapper.writeValueAsString(root), dialog, mapChangePopup));
                         } else {
                             FileHelper.writeUserFile("style", fileName, mapper.writeValueAsString(root), app);
                         }
@@ -212,7 +212,7 @@ public final class AlertDialogFactory {
         return dialog;
     }
 
-    public static AlertDialog askUserOverwriteFile(AppController app, String fileName, String path, String content) {
+    public static AlertDialog askUserOverwriteFile(AppController app, String fileName, String path, String content, FragmentMapChangePopup mapChangePopup) {
         return new AlertDialog.Builder(app.getActivity())
                 .setMessage("Style of filename " + fileName + " already exists, do you wish to overwrite it?")
                 .setPositiveButton("Yes", (dialog, which) -> {
@@ -221,13 +221,13 @@ public final class AlertDialogFactory {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    mapChangePopup.reloadStyles();
                 })
                 .setNegativeButton("No", null)
                 .create();
     }
 
-    public static AlertDialog askUserOverwriteFile(AppController app, String fileName, String path, String content, AlertDialog originDialog) {
-
+    public static AlertDialog askUserOverwriteFile(AppController app, String fileName, String path, String content, AlertDialog originDialog, FragmentMapChangePopup mapChangePopup) {
         return new AlertDialog.Builder(app.getActivity())
                 .setMessage("Style of filename: " + fileName + " already exists, do you wish to overwrite it?")
                 .setPositiveButton("Yes", (dialog, which) -> {
@@ -240,6 +240,7 @@ public final class AlertDialogFactory {
                     if (originDialog != null) {
                         originDialog.dismiss();
                     }
+                    mapChangePopup.reloadStyles();
                     dialog.dismiss();
                 })
                 .setNegativeButton("No", (dialog, which) -> {

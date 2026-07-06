@@ -87,7 +87,7 @@ public class NewStyleBottomSheet extends BottomSheetDialogFragment {
                                                 if (!FileHelper.userFileExists("style", fileName, app)) {
                                                     FileHelper.writeUserFile("style", fileName, content, app);
                                                 } else {
-                                                    app.getUi().alert(AlertDialogFactory.askUserOverwriteFile(app, fileName, "style", content));
+                                                    app.getUi().alert(AlertDialogFactory.askUserOverwriteFile(app, fileName, "style", content, mapChangePopup));
                                                 }
 
                                                 mapChangePopup.reloadStyles();
