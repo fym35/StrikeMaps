@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:background="#000000"
+              android:padding="24dp">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="New style"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF" />
+
+    <View
+            android:id="@+id/headerDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="#FFFFFF" />
+
+    <Button
+            android:id="@+id/buttonFromBuiltInStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="From built-in style"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#333333" />
+
+    <Button
+            android:id="@+id/buttonFromFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="From file"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#333333" />
+
+    <Button
+            android:id="@+id/buttonCreateEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Create empty"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#333333" />
+
+</LinearLayout>

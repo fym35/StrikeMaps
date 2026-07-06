@@ -26,7 +26,6 @@ public final class FileHelper {
 
     public static String loadStringFromUserFile(String filePath) {
         File file = new File(filePath);
-
         try (FileInputStream fis = new FileInputStream(file)) {
             int size = fis.available();
             byte[] buffer = new byte[size];
@@ -36,6 +35,39 @@ public final class FileHelper {
             ex.printStackTrace();
             return null;
         }
+    }
+
+    public static void writeUserFile(String path, String fileName, String content, AppController app) throws IOException {
+        try {
+            File userDirectory = new File(app.getActivity().getExternalFilesDir(null), path);
+
+            if (!userDirectory.exists() && !userDirectory.mkdirs()) {
+                app.logcat("Failed to create directory: " + userDirectory.getAbsolutePath());
+                return;
+            }
+
+            File file = new File(userDirectory, fileName);
+
+            try (FileOutputStream fos = new FileOutputStream(file);
+                 OutputStreamWriter writer = new OutputStreamWriter(fos, StandardCharsets.UTF_8)) {
+
+                writer.write(content);
+                writer.flush();
+            }
+
+        } catch (IOException e) {
+            throw e;
+        }
+    }
+
+    public static boolean deleteFile(String filePath) {
+        File file = new File(filePath);
+
+        if (!file.exists() || !file.isFile()) {
+            return false;
+        }
+
+        return file.delete();
     }
 
     public static String[] getAssetFiles(String path, String fileExt, AppController app) {
@@ -77,9 +109,20 @@ public final class FileHelper {
         }
     }
 
+    public static boolean userFileExists(String path, String fileName, AppController app) {
+        File userDirectory = new File(app.getActivity().getExternalFilesDir(null), path);
+
+        if (!userDirectory.exists() || !userDirectory.isDirectory()) {
+            return false;
+        }
+
+        File file = new File(userDirectory, fileName);
+
+        return file.exists() && file.isFile();
+    }
+
     public static String[] getUserFiles(String path, String fileExt, AppController app) {
-        String packageName = app.getActivity().getPackageName();
-        File userDirectory = new File(Environment.getExternalStorageDirectory(), "Android/data/" + packageName + "/" + path);
+        File userDirectory = new File(app.getActivity().getExternalFilesDir(null), path);
 
         if (!userDirectory.exists() || !userDirectory.isDirectory())
             return new String[0];

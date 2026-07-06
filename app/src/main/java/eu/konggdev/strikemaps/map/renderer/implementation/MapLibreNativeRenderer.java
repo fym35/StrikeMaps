@@ -56,11 +56,13 @@ public class MapLibreNativeRenderer implements MapRenderer, OnMapReadyCallback {
 
                 //Sources
                 ObjectNode sources = mapper.createObjectNode();
-                style.sources.forEach((k, v) -> sources.set(k, mapper.valueToTree(v)));
+                if (style.sources != null)
+                    style.sources.forEach((k, v) -> sources.set(k, mapper.valueToTree(v)));
 
                 //Layers
                 ArrayNode layers = mapper.createArrayNode();
-                layers.addAll((ArrayNode) style.layerDefinitions);
+                if (style.layerDefinitions != null)
+                    layers.addAll((ArrayNode) style.layerDefinitions);
 
                 //Set all to root
                 root.set("sources", sources);
@@ -126,7 +128,7 @@ public class MapLibreNativeRenderer implements MapRenderer, OnMapReadyCallback {
     public void onMapReady(@NonNull MapLibreMap maplibreMap) {
         this.map = maplibreMap;
 
-        controller.setStyle(MapStyle.fromJsonFile(UserPrefsHelper.startupMapStyle(app.getPrefs()), app));
+        controller.setStyle(MapStyle.fromFile(UserPrefsHelper.startupMapStyle(app.getPrefs()), app));
 
         //I have my own implementation of attribution that credits MapLibre among others, it's not as bad as it looks :)
         map.getUiSettings().setLogoEnabled(false);

@@ -52,7 +52,7 @@ public class FragmentLayoutControls extends Fragment implements Layout {
                 .setTitle(app.getActivity().getString(R.string.attribution_title))
                 .setMessage(app.getActivity().getString(R.string.shipped_attribution))
                 .setPositiveButton("OK", null).show();
-    }
+        }
     //*//
 
     public FragmentLayoutControls(AppController app, Integer region) {

@@ -72,11 +72,13 @@ public class MapLibreGLJSRenderer implements MapRenderer {
 
                 //Sources
                 ObjectNode sources = mapper.createObjectNode();
-                style.sources.forEach((k, v) -> sources.set(k, mapper.valueToTree(v)));
+                if (style.sources != null)
+                    style.sources.forEach((k, v) -> sources.set(k, mapper.valueToTree(v)));
 
                 //Layers
                 ArrayNode layers = mapper.createArrayNode();
-                layers.addAll((ArrayNode) style.layerDefinitions);
+                if (style.layerDefinitions != null)
+                    layers.addAll((ArrayNode) style.layerDefinitions);
 
                 //Set all to root
                 root.set("sources", sources);

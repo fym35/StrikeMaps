@@ -23,7 +23,7 @@ public class MapStyle {
     public ArrayNode layerDefinitions;  // "layers" array
 
     //FIXME
-    public static MapStyle fromJsonFile(String filename, AppController app) {
+    public static MapStyle fromFile(String filename, AppController app) {
         String styleContents;
         if (filename.startsWith("/storage")) styleContents = FileHelper.loadStringFromUserFile(filename);
         else styleContents = FileHelper.loadStringFromAssetFile(filename, app);
