@@ -46,16 +46,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fileName" />
 
-    <View
-            android:id="@+id/headerDivider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="12dp"
-            android:background="#FFFFFF"
-            app:layout_constraintTop_toBottomOf="@id/styleType"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/editButton"
             android:layout_width="match_parent"
@@ -63,7 +53,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="2dp"
             android:background="#1B1A1A"
-            app:layout_constraintTop_toBottomOf="@id/headerDivider"
+            app:layout_constraintTop_toBottomOf="@id/styleType"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -131,6 +121,7 @@
             android:layout_width="match_parent"
             android:layout_height="38dp"
             android:layout_marginTop="6dp"
+            android:layout_marginBottom="2dp"
             android:background="#1B1A1A"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -166,7 +157,7 @@
             android:id="@+id/deleteButton"
             android:layout_width="match_parent"
             android:layout_height="38dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="6dp"
             android:layout_marginBottom="5dp"
             android:background="#1B1A1A"
             app:layout_constraintEnd_toEndOf="parent"
@@ -204,7 +195,7 @@
             android:id="@+id/closeButton"
             android:layout_width="match_parent"
             android:layout_height="38dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="6dp"
             android:layout_marginBottom="10dp"
             android:background="#1B1A1A"
             app:layout_constraintEnd_toEndOf="parent"
