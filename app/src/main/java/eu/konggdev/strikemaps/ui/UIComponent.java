@@ -12,6 +12,7 @@ import eu.konggdev.strikemaps.ui.element.region.content.MainContentRegion;
 import eu.konggdev.strikemaps.ui.element.region.UIRegion;
 import eu.konggdev.strikemaps.ui.fragment.layout.FragmentLayoutControls;
 import eu.konggdev.strikemaps.ui.fragment.layout.FragmentLayoutSearch;
+import eu.konggdev.strikemaps.ui.fragment.layout.content.main.FragmentLayoutContentOfflineMaps;
 import eu.konggdev.strikemaps.ui.fragment.layout.content.main.FragmentLayoutContentSettings;
 import eu.konggdev.strikemaps.ui.screen.Screen;
 import eu.konggdev.strikemaps.ui.screen.definition.DefinedScreen;
@@ -50,6 +51,13 @@ public class UIComponent implements Component {
                         //Just the settings content fragment
                         Map.of(
                                 R.id.mainContentView, new MainContentRegion(new FragmentLayoutContentSettings(app), R.id.mainContentView)
+                        )
+                ),
+                //Offline maps screen
+                DefinedScreen.OFFLINE, new Screen(
+                        app,
+                        Map.of(
+                                R.id.mainContentView, new MainContentRegion(new FragmentLayoutContentOfflineMaps(app), R.id.mainContentView)
                         )
                 )
         );

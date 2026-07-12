@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.viewpager2)
 
+    implementation("androidx.core:core-ktx:1.17.0")
     implementation("org.osmdroid:osmdroid-android:6.1.20")
     implementation("org.maplibre.gl:android-sdk:11.13.0")
     implementation("com.github.mapsforge.vtm:vtm:0.27.0")
@@ -61,7 +62,6 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.15.0")
     implementation("org.apache.commons:commons-lang3:3.14.0")
-    implementation(libs.core.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

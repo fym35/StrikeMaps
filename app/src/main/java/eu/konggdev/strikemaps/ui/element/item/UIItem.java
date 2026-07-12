@@ -12,5 +12,4 @@ public interface UIItem {
     }
 
     default View.OnLongClickListener longClick(Runnable action) { return v -> { action.run(); return true; };}
-
 }
