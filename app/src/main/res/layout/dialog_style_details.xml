@@ -46,14 +46,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/fileName" />
 
+    <TextView
+            android:id="@+id/builtInStyleAlert"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="12dp"
+            android:background="@drawable/bg_alert_warning"
+            android:text="Built-in styles can't be edited directly\nMake a copy to customize it"
+            android:textColor="#FFD54F"
+            android:textSize="14sp"
+            android:lineSpacingExtra="2dp"
+            android:gravity="center"
+            android:drawablePadding="8dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@id/styleType"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/editButton"
             android:layout_width="match_parent"
             android:layout_height="38dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="2dp"
             android:background="#1B1A1A"
-            app:layout_constraintTop_toBottomOf="@id/styleType"
+            app:layout_constraintTop_toBottomOf="@id/builtInStyleAlert"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 

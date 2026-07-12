@@ -120,6 +120,7 @@ public class StyleDetailsBottomSheet extends BottomSheetDialogFragment {
         TextView fileNameView = view.findViewById(R.id.fileName);
         TextView styleTypeView = view.findViewById(R.id.styleType);
 
+        TextView builtInStyleAlert = view.findViewById(R.id.builtInStyleAlert);
         ConstraintLayout editButtonLayout = view.findViewById(R.id.editButton);
         ConstraintLayout copyButtonLayout = view.findViewById(R.id.copyButton);
         ConstraintLayout exportButtonLayout = view.findViewById(R.id.exportButton);
@@ -136,6 +137,8 @@ public class StyleDetailsBottomSheet extends BottomSheetDialogFragment {
 
         if (Objects.equals(pathSplit[0], "bundled") && pathSplit.length > 1) {
             styleTypeView.setText("Built-In Style");
+            editButtonLayout.setVisibility(View.GONE);
+            builtInStyleAlert.setVisibility(View.VISIBLE);
             deleteButtonLayout.setVisibility(View.GONE);
         } else {
             styleTypeView.setText("User Style");
