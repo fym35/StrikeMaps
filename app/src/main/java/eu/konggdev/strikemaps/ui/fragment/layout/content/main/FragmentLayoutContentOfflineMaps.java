@@ -3,6 +3,7 @@ package eu.konggdev.strikemaps.ui.fragment.layout.content.main;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import eu.konggdev.strikemaps.R;
@@ -11,6 +12,7 @@ import eu.konggdev.strikemaps.data.helper.FileHelper;
 import eu.konggdev.strikemaps.map.source.MapSource;
 import eu.konggdev.strikemaps.map.style.MapStyle;
 import eu.konggdev.strikemaps.ui.element.item.GenericItem;
+import eu.konggdev.strikemaps.ui.element.item.InlineItem;
 import eu.konggdev.strikemaps.ui.element.item.PreviewItem;
 
 import java.util.ArrayList;
@@ -50,9 +52,9 @@ public class FragmentLayoutContentOfflineMaps extends Fragment implements MainCo
         LinearLayout sourcesLayout = view.findViewById(R.id.llDownloadContainer);
         for (MapSource source : sources) {
             if (!Objects.equals(source.type, "raster"))
-                sourcesLayout.addView(new PreviewItem(source.url, "").makeView(app.getUi()));
+                sourcesLayout.addView(new InlineItem(source.url, () -> Toast.makeText(app.getActivity(), "Work in progress", Toast.LENGTH_SHORT).show()).makeView(app.getUi()));
             else
-                sourcesLayout.addView(new PreviewItem(source.tiles.toString(), "").makeView(app.getUi()));
+                sourcesLayout.addView(new InlineItem(source.tiles.toString(), () -> Toast.makeText(app.getActivity(), "Work in progress", Toast.LENGTH_SHORT).show()).makeView(app.getUi()));
         }
     }
 }
