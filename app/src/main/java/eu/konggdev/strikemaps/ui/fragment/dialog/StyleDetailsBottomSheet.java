@@ -137,6 +137,7 @@ public class StyleDetailsBottomSheet extends BottomSheetDialogFragment {
 
         if (Objects.equals(pathSplit[0], "bundled") && pathSplit.length > 1) {
             styleTypeView.setText("Built-In Style");
+            fileNameView.setVisibility(View.GONE);
             editButtonLayout.setVisibility(View.GONE);
             builtInStyleAlert.setVisibility(View.VISIBLE);
             deleteButtonLayout.setVisibility(View.GONE);
