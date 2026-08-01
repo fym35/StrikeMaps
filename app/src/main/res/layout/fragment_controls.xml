@@ -1,85 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
 
     <ImageButton
-        android:id="@+id/routeButton"
-        android:layout_width="65dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="36dp"
-        android:backgroundTint="#000000"
-        android:src="@android:drawable/ic_menu_directions"
-        app:layout_constraintBottom_toBottomOf="@+id/placesButton"
-        app:layout_constraintStart_toStartOf="parent" />
+            android:id="@+id/routeButton"
+            android:layout_width="64dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="34dp"
+            android:backgroundTint="#000000"
+            android:background="@drawable/bg_map_button"
+            android:src="@android:drawable/ic_menu_directions"
+            app:layout_constraintBottom_toBottomOf="@+id/placesButton"
+            app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
-        android:id="@+id/placesButton"
-        android:layout_width="65dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="36dp"
-        android:backgroundTint="#000000"
-        app:layout_constraintBottom_toBottomOf="@+id/layersButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_myplaces" />
+            android:id="@+id/placesButton"
+            android:layout_width="64dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="34dp"
+            android:backgroundTint="#000000"
+            android:background="@drawable/bg_map_button"
+            app:layout_constraintBottom_toBottomOf="@+id/layersButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@android:drawable/ic_menu_myplaces" />
 
     <ImageButton
-        android:id="@+id/layersButton"
-        android:layout_width="65dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="4dp"
-        android:backgroundTint="#000000"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_styles_menu" />
+            android:id="@+id/layersButton"
+            android:layout_width="64dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="4dp"
+            android:backgroundTint="#000000"
+            android:background="@drawable/bg_map_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/ic_styles_menu" />
 
     <ImageButton
-        android:id="@+id/modeButton"
-        android:layout_width="60dp"
-        android:layout_height="36dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="44dp"
-        android:backgroundTint="#000000"
-        android:src="@android:drawable/ic_menu_manage"
-        app:layout_constraintBottom_toBottomOf="@+id/locationButtonContainer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0" />
+            android:id="@+id/modeButton"
+            android:layout_width="60dp"
+            android:layout_height="34dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="44dp"
+            android:backgroundTint="#000000"
+            android:background="@drawable/bg_map_button"
+            android:src="@android:drawable/ic_menu_manage"
+            app:layout_constraintBottom_toBottomOf="@+id/locationButtonContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0" />
 
     <ImageButton
-        android:id="@+id/attributionButton"
-        android:layout_width="60dp"
-        android:layout_height="31dp"
-        android:layout_marginStart="272dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="4dp"
-        android:backgroundTint="#000000"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.375"
-        app:srcCompat="@android:drawable/ic_menu_info_details" />
+            android:id="@+id/attributionButton"
+            android:layout_width="60dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="272dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
+            android:backgroundTint="#000000"
+            android:background="@drawable/bg_map_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.375"
+            app:srcCompat="@android:drawable/ic_menu_info_details" />
 
     <FrameLayout
-        android:id="@+id/locationButtonContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/attributionButton"
-        app:layout_constraintEnd_toEndOf="parent">
+            android:id="@+id/locationButtonContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="21dp"
+            app:layout_constraintBottom_toBottomOf="@+id/attributionButton"
+            app:layout_constraintEnd_toEndOf="parent">
 
         <ImageButton
-            android:id="@+id/locationButton"
-            android:layout_width="60dp"
-            android:layout_height="47dp"
-            android:backgroundTint="#000000"
-            android:contentDescription="Location"
-            app:srcCompat="@android:drawable/ic_menu_mylocation" />
+                android:id="@+id/locationButton"
+                android:layout_width="60dp"
+                android:layout_height="47dp"
+                android:backgroundTint="#000000"
+                android:background="@drawable/bg_map_button"
+                android:contentDescription="Location"
+                app:srcCompat="@android:drawable/ic_menu_mylocation" />
 
         <TextView
                 android:id="@+id/locationServiceStatusIndicator"
