@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import androidx.annotation.UiContext;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import eu.konggdev.strikemaps.R;
 import eu.konggdev.strikemaps.app.AppController;
@@ -127,9 +128,9 @@ public class NewStyleBottomSheet extends BottomSheetDialogFragment {
 
         View view = inflater.inflate(R.layout.dialog_new_style, container, false);
 
-        Button builtInBtn = view.findViewById(R.id.buttonFromBuiltInStyle);
-        Button fileBtn = view.findViewById(R.id.buttonFromFile);
-        Button emptyBtn = view.findViewById(R.id.buttonCreateEmpty);
+        ConstraintLayout builtInBtn = view.findViewById(R.id.buttonFromBuiltInStyle);
+        ConstraintLayout fileBtn = view.findViewById(R.id.buttonFromFile);
+        ConstraintLayout emptyBtn = view.findViewById(R.id.buttonCreateEmpty);
 
         builtInBtn.setOnClickListener(v -> {
             app.getUi().alert(AlertDialogFactory.copyBuiltInStyle(app, map, ui, mapChangePopup));
