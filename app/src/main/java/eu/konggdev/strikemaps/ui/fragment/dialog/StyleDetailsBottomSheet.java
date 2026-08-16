@@ -2,26 +2,21 @@ package eu.konggdev.strikemaps.ui.fragment.dialog;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import eu.konggdev.strikemaps.R;
 import eu.konggdev.strikemaps.app.AppController;
-import eu.konggdev.strikemaps.data.helper.FileHelper;
+import eu.konggdev.strikemaps.app.util.helper.FileHelper;
 import eu.konggdev.strikemaps.map.MapComponent;
 import eu.konggdev.strikemaps.map.style.MapStyle;
 import eu.konggdev.strikemaps.ui.UIComponent;
@@ -31,8 +26,6 @@ import eu.konggdev.strikemaps.ui.fragment.popup.FragmentMapChangePopup;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
-
-import static android.media.MediaExtractor.MetricsConstants.MIME_TYPE;
 
 public class StyleDetailsBottomSheet extends BottomSheetDialogFragment {
     @NonNull
@@ -121,11 +114,11 @@ public class StyleDetailsBottomSheet extends BottomSheetDialogFragment {
         TextView styleTypeView = view.findViewById(R.id.styleType);
 
         TextView builtInStyleAlert = view.findViewById(R.id.builtInStyleAlert);
-        ConstraintLayout editButtonLayout = view.findViewById(R.id.editButton);
-        ConstraintLayout copyButtonLayout = view.findViewById(R.id.copyButton);
-        ConstraintLayout exportButtonLayout = view.findViewById(R.id.exportButton);
-        ConstraintLayout deleteButtonLayout = view.findViewById(R.id.deleteButton);
-        ConstraintLayout closeButtonLayout = view.findViewById(R.id.closeButton);
+        MaterialCardView editButtonLayout = view.findViewById(R.id.editButton);
+        MaterialCardView copyButtonLayout = view.findViewById(R.id.copyButton);
+        MaterialCardView exportButtonLayout = view.findViewById(R.id.exportButton);
+        MaterialCardView deleteButtonLayout = view.findViewById(R.id.deleteButton);
+        MaterialCardView closeButtonLayout = view.findViewById(R.id.closeButton);
 
 
         styleNameView.setText(style.name);

@@ -8,26 +8,23 @@ import android.provider.OpenableColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import androidx.annotation.UiContext;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.card.MaterialCardView;
 import eu.konggdev.strikemaps.R;
 import eu.konggdev.strikemaps.app.AppController;
-import eu.konggdev.strikemaps.data.helper.FileHelper;
+import eu.konggdev.strikemaps.app.util.helper.FileHelper;
 import eu.konggdev.strikemaps.map.MapComponent;
 import eu.konggdev.strikemaps.ui.UIComponent;
 import eu.konggdev.strikemaps.ui.factory.AlertDialogFactory;
 import eu.konggdev.strikemaps.ui.fragment.popup.FragmentMapChangePopup;
 
 import java.io.*;
-import java.util.stream.Collectors;
 
 public class NewStyleBottomSheet extends BottomSheetDialogFragment {
     private final String styleBase = "{\"name\":\"None\"}";
@@ -128,9 +125,9 @@ public class NewStyleBottomSheet extends BottomSheetDialogFragment {
 
         View view = inflater.inflate(R.layout.dialog_new_style, container, false);
 
-        ConstraintLayout builtInBtn = view.findViewById(R.id.buttonFromBuiltInStyle);
-        ConstraintLayout fileBtn = view.findViewById(R.id.buttonFromFile);
-        ConstraintLayout emptyBtn = view.findViewById(R.id.buttonCreateEmpty);
+        MaterialCardView builtInBtn = view.findViewById(R.id.buttonFromBuiltInStyle);
+        MaterialCardView fileBtn = view.findViewById(R.id.buttonFromFile);
+        MaterialCardView emptyBtn = view.findViewById(R.id.buttonCreateEmpty);
 
         builtInBtn.setOnClickListener(v -> {
             app.getUi().alert(AlertDialogFactory.copyBuiltInStyle(app, map, ui, mapChangePopup));
