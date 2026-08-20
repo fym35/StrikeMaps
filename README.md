@@ -1,11 +1,11 @@
 ## Strike Maps 
 
 Strike Maps is a FOSS mapping app for Android,
-focusing on customization and offline features.
+focusing on customization and offline features
 <br>
 
 It is developed as part of a broader project, hoping to create a multi-platform,
-user-facing, complete FOSS mapping stack.
+user-facing, complete FOSS mapping stack
 <br>
 
 This Android app has been in development since around January 2026
