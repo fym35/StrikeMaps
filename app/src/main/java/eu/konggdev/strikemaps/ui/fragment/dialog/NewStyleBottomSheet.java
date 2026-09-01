@@ -18,8 +18,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.card.MaterialCardView;
 import eu.konggdev.strikemaps.R;
 import eu.konggdev.strikemaps.app.AppController;
-import eu.konggdev.strikemaps.app.util.helper.FileHelper;
 import eu.konggdev.strikemaps.map.MapComponent;
+import eu.konggdev.strikemaps.map.style.MapStyle;
+import eu.konggdev.strikemaps.map.style.options.StyleOptions;
 import eu.konggdev.strikemaps.ui.UIComponent;
 import eu.konggdev.strikemaps.ui.factory.AlertDialogFactory;
 import eu.konggdev.strikemaps.ui.fragment.popup.FragmentMapChangePopup;
@@ -34,7 +35,6 @@ public class NewStyleBottomSheet extends BottomSheetDialogFragment {
     @NonNull UIComponent ui;
     @NonNull
     FragmentMapChangePopup mapChangePopup;
-
 
     private final ActivityResultLauncher<Intent> importLauncher =
             registerForActivityResult(
@@ -79,17 +79,15 @@ public class NewStyleBottomSheet extends BottomSheetDialogFragment {
                                                                 mapChangePopup
                                                         )
                                                 );
-
-                                                return;
                                             } else {
-                                                if (!FileHelper.userFileExists("style", fileName, app)) {
-                                                    FileHelper.writeUserFile("style", fileName, content, app);
-                                                } else {
-                                                    app.getUi().alert(AlertDialogFactory.askUserOverwriteFile(app, fileName, "style", content, mapChangePopup));
-                                                }
-
+                                                app.getRegistry().addStyle(
+                                                        new MapStyle(
+                                                                content,
+                                                                new StyleOptions(),
+                                                                null
+                                                        )
+                                                );
                                                 mapChangePopup.reloadStyles();
-                                                return;
                                             }
                                         }
                                     }
@@ -119,9 +117,7 @@ public class NewStyleBottomSheet extends BottomSheetDialogFragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.dialog_new_style, container, false);
 

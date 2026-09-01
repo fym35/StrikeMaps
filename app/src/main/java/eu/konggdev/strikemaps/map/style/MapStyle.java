@@ -1,68 +1,64 @@
 package eu.konggdev.strikemaps.map.style;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import eu.konggdev.strikemaps.app.AppController;
-import eu.konggdev.strikemaps.data.helper.FileHelper;
-import eu.konggdev.strikemaps.map.source.MapSource;
-
-import java.util.*;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import eu.konggdev.strikemaps.map.style.document.StyleDocument;
+import eu.konggdev.strikemaps.map.style.management.StyleManagementMetadata;
+import eu.konggdev.strikemaps.map.style.options.StyleOptions;
 
 public class MapStyle {
-    //Only local data
-    public String name;
-    public Bitmap icon;
+    public static final class StoredRepresentation {
+        public final String json;
+        public final StyleOptions options;
 
-    public JsonNode metadata; // everything except layers + sources
-    public Map<String, MapSource> sources;
-    public ArrayNode layerDefinitions;  // "layers" array
+        public final StyleManagementMetadata managementMetadata;
 
-    //FIXME
-    public static MapStyle fromFile(String filename, AppController app) {
-        String styleContents;
-        if (filename.startsWith("/storage")) styleContents = FileHelper.loadStringFromUserFile(filename);
-        else styleContents = FileHelper.loadStringFromAssetFile(filename, app);
+        public StoredRepresentation(String json, StyleOptions options, StyleManagementMetadata managementMetadata) {
+            this.json = json;
+            this.options = options;
+            this.managementMetadata = managementMetadata;
+        }
 
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            JsonNode root = mapper.readTree(styleContents);
-
-            MapStyle style = new MapStyle();	
-            style.name = root.path("name").asText();
-            style.icon = getIcon(root.path("icon").asText(), app);
-
-            style.sources = mapper.convertValue(
-                    root.path("sources"),
-                    new TypeReference<Map<String, MapSource>>() {}
+        public MapStyle restore() {
+            MapStyle style = new MapStyle(
+                    json,
+                    options,
+                    managementMetadata
             );
 
-            style.layerDefinitions = root.withArray("layers");
-
-            ObjectNode metadata = root.deepCopy();
-            metadata.remove("layers");
-            metadata.remove("sources");
-            style.metadata = metadata;
-
             return style;
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return null;
     }
 
-    public static Bitmap getIcon(String iconLocator, AppController app) {
-        switch(iconLocator.split("//")[0]) {
-            //TODO: https
-            case "assets:":
-                return BitmapFactory.decodeStream(FileHelper.openAssetStream("bundled/icon/" + iconLocator.split("//")[1], app));
-            default:
-                app.logcat("Unimplemented icon locator space: " + iconLocator);
-                return null;
-        }
+    @NonNull public final StyleDocument document;
+    @NonNull public final StyleOptions options;
+
+    // Null when the style is not managed
+    @Nullable public StyleManagementMetadata managementMetadata;
+
+    // Original json representation of the style document, as we got it
+    @NonNull public final String json;
+
+
+    public MapStyle(@NonNull String json, @NonNull StyleOptions styleOptions, @Nullable StyleManagementMetadata managementMetadata) {
+        this.json = json;
+        this.document = new StyleDocument(json);
+        this.options = styleOptions;
+        this.managementMetadata = managementMetadata;
+    }
+
+    public MapStyle(@NonNull String json, @NonNull StyleDocument style, @NonNull StyleOptions styleOptions, @Nullable StyleManagementMetadata managementMetadata) {
+        this.json = json;
+        this.document = style;
+        this.options = styleOptions;
+        this.managementMetadata = managementMetadata;
+    }
+
+    public StoredRepresentation makeStoredRepresentation() {
+         return new StoredRepresentation(json, options, managementMetadata);
+    }
+
+    public StyleDocument effectiveDocument() {
+        return document.effectiveDocument(options);
     }
 }

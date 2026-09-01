@@ -1,35 +1,34 @@
-package eu.konggdev.strikemaps.data.helper;
+package eu.konggdev.strikemaps.helper;
 
 import android.content.res.AssetManager;
-import android.os.Environment;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import eu.konggdev.strikemaps.app.AppController;
 
 //FIXME: Ugly
 public final class FileHelper {
+    public static Bitmap getIcon(String iconLocator, AppController app) {
+        switch (iconLocator.split("//")[0]) {
+            //TODO: https
+            case "assets:":
+                return BitmapFactory.decodeStream(FileHelper.openAssetStream("bundled/icon/" + iconLocator.split("//")[1], app));
+            default:
+                app.logcat("Unimplemented icon locator space: " + iconLocator);
+                return null;
+        }
+    }
+
     public static String loadStringFromAssetFile(String filePath, AppController app) {
         try (InputStream is = app.getActivity().getAssets().open(filePath)) {
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
-            return new String(buffer, StandardCharsets.UTF_8);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    public static String loadStringFromUserFile(String filePath) {
-        File file = new File(filePath);
-        try (FileInputStream fis = new FileInputStream(file)) {
-            int size = fis.available();
-            byte[] buffer = new byte[size];
-            fis.read(buffer);
             return new String(buffer, StandardCharsets.UTF_8);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -58,16 +57,6 @@ public final class FileHelper {
         } catch (IOException e) {
             throw e;
         }
-    }
-
-    public static boolean deleteFile(String filePath) {
-        File file = new File(filePath);
-
-        if (!file.exists() || !file.isFile()) {
-            return false;
-        }
-
-        return file.delete();
     }
 
     public static String[] getAssetFiles(String path, String fileExt, AppController app) {
@@ -109,44 +98,4 @@ public final class FileHelper {
         }
     }
 
-    public static boolean userFileExists(String path, String fileName, AppController app) {
-        File userDirectory = new File(app.getActivity().getExternalFilesDir(null), path);
-
-        if (!userDirectory.exists() || !userDirectory.isDirectory()) {
-            return false;
-        }
-
-        File file = new File(userDirectory, fileName);
-
-        return file.exists() && file.isFile();
-    }
-
-    public static String[] getUserFiles(String path, String fileExt, AppController app) {
-        File userDirectory = new File(app.getActivity().getExternalFilesDir(null), path);
-
-        if (!userDirectory.exists() || !userDirectory.isDirectory())
-            return new String[0];
-
-        File[] files = userDirectory.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String filename) {
-                if (fileExt == null || fileExt.isEmpty()) {
-                    return true;
-                }
-
-                return filename.toLowerCase().endsWith(fileExt.toLowerCase());
-            }
-        });
-
-        if (files == null || files.length == 0) {
-            return new String[0];
-        }
-
-        List<String> fileList = new ArrayList<>();
-        for (File file : files) {
-            fileList.add(file.getAbsolutePath());
-        }
-
-        return fileList.toArray(new String[0]);
-    }
 }

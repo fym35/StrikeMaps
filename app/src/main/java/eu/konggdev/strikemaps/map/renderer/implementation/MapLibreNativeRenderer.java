@@ -10,10 +10,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import eu.konggdev.strikemaps.app.util.JsonPatcher;
-import eu.konggdev.strikemaps.data.helper.UserPrefsHelper;
 import eu.konggdev.strikemaps.map.overlay.MapOverlay;
 import eu.konggdev.strikemaps.map.renderer.MapRenderer;
-import eu.konggdev.strikemaps.map.style.MapStyle;
+import eu.konggdev.strikemaps.map.source.MapSource;
+import eu.konggdev.strikemaps.map.style.document.StyleDocument;
 import org.maplibre.android.MapLibre;
 import org.maplibre.android.geometry.LatLng;
 import org.maplibre.android.maps.MapLibreMap;
@@ -32,7 +32,6 @@ public class MapLibreNativeRenderer implements MapRenderer, OnMapReadyCallback {
     @NonNull MapComponent controller;
     MapLibreMap map;
     final MapView mapView;
-
     private JsonNode origin;
 
     public MapLibreNativeRenderer(AppController app, MapComponent controller) {
@@ -45,7 +44,7 @@ public class MapLibreNativeRenderer implements MapRenderer, OnMapReadyCallback {
     }
 
     @Override
-    public void styleUpdate(MapStyle style) {
+    public void styleUpdate(StyleDocument style) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 
@@ -57,7 +56,8 @@ public class MapLibreNativeRenderer implements MapRenderer, OnMapReadyCallback {
                 //Sources
                 ObjectNode sources = mapper.createObjectNode();
                 if (style.sources != null)
-                    style.sources.forEach((k, v) -> sources.set(k, mapper.valueToTree(v)));
+                    for (MapSource source : style.sources)
+                        sources.set(source.name, source.makeJson());
 
                 //Layers
                 ArrayNode layers = mapper.createArrayNode();
@@ -128,7 +128,7 @@ public class MapLibreNativeRenderer implements MapRenderer, OnMapReadyCallback {
     public void onMapReady(@NonNull MapLibreMap maplibreMap) {
         this.map = maplibreMap;
 
-        controller.setStyle(MapStyle.fromFile(UserPrefsHelper.startupMapStyle(app.getPrefs()), app));
+        controller.onMapInit();
 
         //I have my own implementation of attribution that credits MapLibre among others, it's not as bad as it looks :)
         map.getUiSettings().setLogoEnabled(false);

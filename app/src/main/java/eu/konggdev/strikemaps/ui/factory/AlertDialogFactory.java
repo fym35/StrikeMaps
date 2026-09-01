@@ -1,63 +1,37 @@
 package eu.konggdev.strikemaps.ui.factory;
 
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.konggdev.strikemaps.app.AppController;
 import eu.konggdev.strikemaps.app.util.JsonPatcher;
-import eu.konggdev.strikemaps.data.helper.FileHelper;
 import eu.konggdev.strikemaps.map.MapComponent;
 import eu.konggdev.strikemaps.map.style.MapStyle;
+import eu.konggdev.strikemaps.map.style.options.StyleOptions;
 import eu.konggdev.strikemaps.ui.UIComponent;
-import eu.konggdev.strikemaps.ui.element.item.GenericItem;
 import eu.konggdev.strikemaps.ui.element.item.PreviewItem;
 import eu.konggdev.strikemaps.ui.fragment.popup.FragmentMapChangePopup;
 import org.maplibre.geojson.Feature;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Consumer;
 
-import static androidx.core.content.ContextCompat.getSystemService;
 
-//FIXME: Move Item functions into specific classes for specific types - e.g. StyleItem
+//FIXME: Cleaner architecture would be having a class for each AlertDialog type
 public final class AlertDialogFactory {
     public static AlertDialog copyBuiltInStyle(AppController app, MapComponent map, UIComponent ui, FragmentMapChangePopup mapChangePopup) {
-        //TODO: Use an UI element thats supposed to be vertical, instead of GenericItem
-        List<String> styles = Arrays.asList(FileHelper.getAssetFiles("bundled/style", ".style.json", app));
+        //TODO: Use an UI element that's supposed to be vertical, instead of GenericItem
 
         LinearLayout container = new LinearLayout(app.getActivity());
         container.setOrientation(LinearLayout.VERTICAL);
-
-        for (String style : styles) {
-            View itemView = GenericItem
-                    .fromStyle(
-                            MapStyle.fromFile(style, app),
-                            map,
-                            () -> ui.alert(AlertDialogFactory.createStyle(app, FileHelper.loadStringFromAssetFile(style, app), mapChangePopup))
-                    )
-                    .makeView(ui);
-
-            container.addView(itemView);
-        }
 
         ScrollView scrollView = new ScrollView(app.getActivity());
         scrollView.addView(container);
@@ -75,15 +49,6 @@ public final class AlertDialogFactory {
         final EditText nameInput = new EditText(app.getActivity());
         nameInput.setHint("Name");
 
-        final CheckBox inferFileName = new CheckBox(app.getActivity());
-        inferFileName.setText("Infer filename automatically");
-        inferFileName.setChecked(true);
-
-        final EditText fileInput = new EditText(app.getActivity());
-        fileInput.setHint("Filename");
-
-        final TextView inferedFileName = new TextView(app.getActivity());
-        inferedFileName.setPadding(0, 2, 0, 0);
         LinearLayout container = new LinearLayout(app.getActivity());
         container.setOrientation(LinearLayout.VERTICAL);
 
@@ -91,38 +56,6 @@ public final class AlertDialogFactory {
         container.setPadding(padding, padding, padding, 0);
 
         container.addView(nameInput);
-        container.addView(inferFileName);
-        container.addView(fileInput);
-        container.addView(inferedFileName);
-
-        inferFileName.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            fileInput.setVisibility(isChecked ? View.GONE : View.VISIBLE);
-            inferedFileName.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-        });
-
-        fileInput.setVisibility(inferFileName.isChecked() ? View.GONE : View.VISIBLE);
-        inferedFileName.setVisibility(inferFileName.isChecked() ? View.VISIBLE : View.GONE);
-
-        nameInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String nameText = "";
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                    if (!s.isEmpty() && s != null) {
-                        nameText = "File name will be: " + s.toString().toLowerCase(Locale.ROOT) + ".style.json";
-                    }
-                } else if (s != null) {
-                    nameText = "File name will be: " + s.toString().toLowerCase(Locale.ROOT) + ".style.json";
-                }
-
-                inferedFileName.setText(nameText);
-            }
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
 
         AlertDialog dialog = new AlertDialog.Builder(app.getActivity())
                 .setTitle("Create")
@@ -160,21 +93,6 @@ public final class AlertDialogFactory {
 
                 assert !name.isEmpty();
 
-                String fileName;
-                if (inferFileName.isChecked()) {
-                    fileName = name.toLowerCase(Locale.ROOT) + ".style.json";
-                } else {
-                    fileName = fileInput.getText().toString();
-                    if (fileName.isEmpty()) {
-                        fileInput.setError("File name required");
-                        return;
-                    }
-
-                    if (!fileName.endsWith(".style.json")) {
-                        fileInput.setError("File must end with .style.json");
-                        return;
-                    }
-                }
 
                 try {
                     JsonNode root;
@@ -194,12 +112,12 @@ public final class AlertDialogFactory {
                         root = JsonPatcher.patch(root, node);
                     }
 
-                        if (FileHelper.userFileExists("style", fileName, app)) {
-                            app.getUi().alert(askUserOverwriteFile(app, fileName, "style", mapper.writeValueAsString(root), dialog, mapChangePopup));
-                        } else {
-                            FileHelper.writeUserFile("style", fileName, mapper.writeValueAsString(root), app);
-                        }
-                        dialog.dismiss();
+                    app.getRegistry().addStyle(new MapStyle(
+                        mapper.writeValueAsString(root),
+                        new StyleOptions(),
+                        null
+                    ));
+                    dialog.dismiss();
                 } catch (Exception e) {
                     Toast.makeText(app.getActivity(), "Failed to create", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
@@ -210,46 +128,6 @@ public final class AlertDialogFactory {
         });
 
         return dialog;
-    }
-
-    public static AlertDialog askUserOverwriteFile(AppController app, String fileName, String path, String content, FragmentMapChangePopup mapChangePopup) {
-        return new AlertDialog.Builder(app.getActivity())
-                .setMessage("Style of filename " + fileName + " already exists, do you wish to overwrite it?")
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    try {
-                        FileHelper.writeUserFile(path, fileName, content, app);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    mapChangePopup.reloadStyles();
-                })
-                .setNegativeButton("No", null)
-                .create();
-    }
-
-    public static AlertDialog askUserOverwriteFile(AppController app, String fileName, String path, String content, AlertDialog originDialog, FragmentMapChangePopup mapChangePopup) {
-        return new AlertDialog.Builder(app.getActivity())
-                .setMessage("Style of filename: " + fileName + " already exists, do you wish to overwrite it?")
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    try {
-                        FileHelper.writeUserFile(path, fileName, content, app);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    if (originDialog != null) {
-                        originDialog.dismiss();
-                    }
-                    mapChangePopup.reloadStyles();
-                    dialog.dismiss();
-                })
-                .setNegativeButton("No", (dialog, which) -> {
-                    if (originDialog != null) {
-                        originDialog.dismiss();
-                    }
-                    dialog.dismiss();
-                })
-                .create();
     }
 
     public static AlertDialog pointSelector(AppController app, List<Feature> features, Consumer<Feature> callback) {

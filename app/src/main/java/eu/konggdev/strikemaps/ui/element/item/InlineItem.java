@@ -3,6 +3,7 @@ package eu.konggdev.strikemaps.ui.element.item;
 import android.view.View;
 import android.widget.TextView;
 import eu.konggdev.strikemaps.R;
+import eu.konggdev.strikemaps.map.source.MapSource;
 import eu.konggdev.strikemaps.ui.UIComponent;
 
 public class InlineItem implements UIItem {
@@ -17,6 +18,15 @@ public class InlineItem implements UIItem {
         this.text = refText;
         this.onClick = onClick;
     }
+
+    public static InlineItem fromSource(MapSource source) {
+        return new InlineItem(source.name);
+    }
+
+    public static InlineItem fromSource(MapSource source, Runnable onClick) {
+        return new InlineItem(source.name, onClick);
+    }
+
 
     @Override
     public View makeView(UIComponent spawner) {

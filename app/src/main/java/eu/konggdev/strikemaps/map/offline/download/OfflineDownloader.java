@@ -7,8 +7,8 @@ import java.net.URI;
 public final class OfflineDownloader {
 
     public static String[] fetchAvailableExports(MapSource source) {
-        URI uri = URI.create(source.url);
-        String host = uri.getHost();
+        //URI uri = URI.create(source.url);
+        //String host = uri.getHost();
         return new String[0];
     }
 

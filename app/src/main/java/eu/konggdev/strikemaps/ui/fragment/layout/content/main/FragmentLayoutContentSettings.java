@@ -1,6 +1,5 @@
 package eu.konggdev.strikemaps.ui.fragment.layout.content.main;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -8,16 +7,11 @@ import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import com.google.android.material.appbar.MaterialToolbar;
 import eu.konggdev.strikemaps.R;
-import eu.konggdev.strikemaps.data.helper.UserPrefsHelper;
+import eu.konggdev.strikemaps.helper.UserPrefsHelper;
 import eu.konggdev.strikemaps.app.AppController;
-import eu.konggdev.strikemaps.map.MapComponent;
 import eu.konggdev.strikemaps.ui.factory.AlertDialogFactory;
-
-import java.util.Arrays;
 
 
 public class FragmentLayoutContentSettings extends Fragment implements MainContentLayout {

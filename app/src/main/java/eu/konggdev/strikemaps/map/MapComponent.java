@@ -5,10 +5,10 @@ import java.util.*;
 import android.widget.Toast;
 import eu.konggdev.strikemaps.Component;
 import eu.konggdev.strikemaps.map.renderer.implementation.MapLibreGLJSRenderer;
-import eu.konggdev.strikemaps.ui.factory.AlertDialogFactory;
-import eu.konggdev.strikemaps.data.helper.UserPrefsHelper;
-import eu.konggdev.strikemaps.map.renderer.implementation.VtmRenderer;
 import eu.konggdev.strikemaps.map.style.MapStyle;
+import eu.konggdev.strikemaps.ui.factory.AlertDialogFactory;
+import eu.konggdev.strikemaps.helper.UserPrefsHelper;
+import eu.konggdev.strikemaps.map.renderer.implementation.VtmRenderer;
 import org.maplibre.android.geometry.LatLng;
 import org.maplibre.geojson.Feature;
 
@@ -19,8 +19,8 @@ import eu.konggdev.strikemaps.map.renderer.MapRenderer;
 import eu.konggdev.strikemaps.ui.fragment.layout.content.main.FragmentLayoutContentMap;
 
 public class MapComponent implements Component {
-    MapRenderer mapRenderer;
-    AppController app;
+    private final MapRenderer mapRenderer;
+    private final AppController app;
 
     public MapStyle style;
     public Map<Class<? extends MapOverlay>, MapOverlay> overlays = new HashMap<>();
@@ -50,7 +50,7 @@ public class MapComponent implements Component {
 
     public void setStyle(MapStyle style) {
         this.style = style;
-        mapRenderer.styleUpdate(style);
+        mapRenderer.styleUpdate(style.effectiveDocument());
     }
 
     public void switchOverlay(MapOverlay overlay) {
@@ -67,12 +67,12 @@ public class MapComponent implements Component {
         return overlays.containsKey(overlay);
     }
 
-    public void selectPoint(Feature selection) {
-        //FIXME: Put back FragmentPointPreviewPopup (private code atm)
-    }
-
     public void overlayUpdate(MapOverlay in) {
         mapRenderer.overlayUpdate(in);
+    }
+
+    public void selectPoint(Feature selection) {
+        //FIXME: Put back FragmentPointPreviewPopup (private code atm)
     }
 
     public boolean onMapClick(LatLng point) {
@@ -98,5 +98,13 @@ public class MapComponent implements Component {
     public boolean onMapLongClick(LatLng point) {
         //TODO: Likely Nonfeature(?) point selection
         return true;
+    }
+
+    public void onMapInit() {
+        setStyle(
+                app.getRegistry().getStyle(
+                        UserPrefsHelper.startupMapStyle(app.getPrefs())
+                )
+        );
     }
 }

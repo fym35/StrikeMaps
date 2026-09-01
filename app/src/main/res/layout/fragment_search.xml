@@ -26,17 +26,6 @@
                 android:background="@android:color/transparent" />
 
         <ImageButton
-                android:id="@+id/offlineMapsButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:contentDescription="Offline Maps"
-                android:src="@drawable/ic_offline"
-                android:padding="6dp"
-                android:scaleType="fitCenter"
-                app:tint="#B0B0B0" />
-
-        <ImageButton
                 android:id="@+id/hamburgerButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

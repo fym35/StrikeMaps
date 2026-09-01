@@ -29,6 +29,8 @@ public class PreviewItem implements UIItem {
     public static PreviewItem fromFeature(Feature feature) {
         return new PreviewItem(feature.getStringProperty("name"), feature.getStringProperty("class"));
     }
+
+    @Override
     public View makeView(UIComponent spawner) {
         View view = spawner.inflateUi(R.layout.item_preview);
         ((TextView) view.findViewById(R.id.choiceName)).setText(name);
@@ -36,6 +38,7 @@ public class PreviewItem implements UIItem {
             ((TextView) view.findViewById(R.id.details)).setText(details);
         return view;
     }
+
     public View makeView(UIComponent spawner, View.OnClickListener onClick) {
         View view = makeView(spawner);
         view.setOnClickListener(onClick);

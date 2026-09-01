@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import eu.konggdev.strikemaps.app.AppController;
 import eu.konggdev.strikemaps.map.MapComponent;
 import eu.konggdev.strikemaps.map.overlay.MapOverlay;
-import eu.konggdev.strikemaps.map.source.MapSource;
 
 import eu.konggdev.strikemaps.data.provider.LocationDataProvider;
 

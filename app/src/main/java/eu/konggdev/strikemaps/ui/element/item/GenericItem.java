@@ -7,8 +7,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import eu.konggdev.strikemaps.R;
+import eu.konggdev.strikemaps.app.AppController;
+import eu.konggdev.strikemaps.helper.FileHelper;
 import eu.konggdev.strikemaps.map.MapComponent;
-import eu.konggdev.strikemaps.map.style.MapStyle;
+import eu.konggdev.strikemaps.map.style.document.StyleDocument;
 import eu.konggdev.strikemaps.ui.UIComponent;
 
 public class GenericItem implements UIItem {
@@ -53,19 +55,20 @@ public class GenericItem implements UIItem {
         hasImage = true;
     }
 
-    public final static GenericItem fromStyle(MapStyle style, MapComponent map, Runnable onClick) {
+    public static GenericItem fromStyle(StyleDocument style, AppController app, Runnable onClick) {
         if(style == null) return new GenericItem("Unknown");
         if(style.icon != null)
-            return new GenericItem(style.name, style.icon, onClick);
+            return new GenericItem(style.name, FileHelper.getIcon(style.icon, app), onClick);
         return new GenericItem(style.name, onClick);
     }
-    public final static GenericItem fromStyle(MapStyle style, MapComponent map, Runnable onClick, Runnable onLongClick) {
+    public static GenericItem fromStyle(StyleDocument style, AppController app, Runnable onClick, Runnable onLongClick) {
         if(style == null) return new GenericItem("Unknown");
         if(style.icon != null)
-            return new GenericItem(style.name, style.icon, onClick, onLongClick);
+            return new GenericItem(style.name, FileHelper.getIcon(style.icon, app), onClick, onLongClick);
         return new GenericItem(style.name, onClick, onLongClick);
     }
 
+    @Override
     public View makeView(UIComponent spawner) {
         View v = spawner.inflateUi(R.layout.item_generic);
         //FIXME: These shouldn't be casted like that!

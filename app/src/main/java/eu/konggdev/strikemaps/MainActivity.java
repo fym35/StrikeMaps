@@ -1,8 +1,5 @@
 package eu.konggdev.strikemaps;
 
-import static org.maplibre.android.style.layers.PropertyFactory.lineColor;
-import static org.maplibre.android.style.layers.PropertyFactory.lineWidth;
-
 import eu.konggdev.strikemaps.app.AppController;
 
 import android.os.Bundle;

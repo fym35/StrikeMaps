@@ -3,7 +3,6 @@ package eu.konggdev.strikemaps.map.renderer.implementation;
 import android.annotation.SuppressLint;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -18,9 +17,9 @@ import eu.konggdev.strikemaps.app.util.JsonPatcher;
 import eu.konggdev.strikemaps.map.MapComponent;
 import eu.konggdev.strikemaps.map.overlay.MapOverlay;
 import eu.konggdev.strikemaps.map.renderer.MapRenderer;
-import eu.konggdev.strikemaps.map.style.MapStyle;
+import eu.konggdev.strikemaps.map.source.MapSource;
+import eu.konggdev.strikemaps.map.style.document.StyleDocument;
 import org.maplibre.android.geometry.LatLng;
-import org.maplibre.android.maps.Style;
 import org.maplibre.geojson.Feature;
 
 import java.util.Collections;
@@ -61,7 +60,7 @@ public class MapLibreGLJSRenderer implements MapRenderer {
     }
 
     @Override
-    public void styleUpdate(MapStyle style) {
+    public void styleUpdate(StyleDocument style) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 
@@ -73,7 +72,8 @@ public class MapLibreGLJSRenderer implements MapRenderer {
                 //Sources
                 ObjectNode sources = mapper.createObjectNode();
                 if (style.sources != null)
-                    style.sources.forEach((k, v) -> sources.set(k, mapper.valueToTree(v)));
+                    for (MapSource source : style.sources)
+                        sources.set(source.name, source.makeJson());
 
                 //Layers
                 ArrayNode layers = mapper.createArrayNode();
@@ -145,5 +145,5 @@ public class MapLibreGLJSRenderer implements MapRenderer {
         return Collections.emptyList();
     }
 
-    class Bridge { }
+    static class Bridge { }
 }
