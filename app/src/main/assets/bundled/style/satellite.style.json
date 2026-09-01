@@ -1,7 +1,7 @@
 {
   "version": 8,
-  "name": "Satelite",
-  "icon": "assets://satelite.bmp",
+  "name": "Satellite",
+  "icon": "assets://satellite.bmp",
   "sources": {
     "satelite": {
       "type": "raster",
