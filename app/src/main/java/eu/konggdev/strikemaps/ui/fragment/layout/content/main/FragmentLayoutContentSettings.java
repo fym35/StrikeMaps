@@ -11,15 +11,17 @@ import androidx.fragment.app.Fragment;
 import eu.konggdev.strikemaps.R;
 import eu.konggdev.strikemaps.helper.UserPrefsHelper;
 import eu.konggdev.strikemaps.app.AppController;
+import eu.konggdev.strikemaps.ui.UIComponent;
 import eu.konggdev.strikemaps.ui.factory.AlertDialogFactory;
 
 
 public class FragmentLayoutContentSettings extends Fragment implements MainContentLayout {
     @NonNull AppController app;
-
+    @NonNull UIComponent ui;
     public FragmentLayoutContentSettings(AppController app) {
         super(R.layout.fragment_settings);
         this.app = app;
+        this.ui = app.getUi();
     }
 
     @Override
@@ -49,7 +51,7 @@ public class FragmentLayoutContentSettings extends Fragment implements MainConte
                         }
 
                         UserPrefsHelper.mapRenderer(app.getPrefs(), position);
-                        app.getUi().alert(AlertDialogFactory.restartDialog(app));
+                        ui.alert(AlertDialogFactory.restartDialog(app));
                     }
 
                     @Override

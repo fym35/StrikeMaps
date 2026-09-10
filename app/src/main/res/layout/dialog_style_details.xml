@@ -20,42 +20,42 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-            android:id="@+id/styleType"
-            android:layout_width="112dp"
-            android:layout_height="27dp"
-            android:layout_marginTop="4dp"
-            android:gravity="center"
-            android:text="Style Type?"
-            android:textColor="#FDFDFD"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/styleName" />
-
-    <TextView
-            android:id="@+id/builtInStyleAlert"
-            android:layout_width="0dp"
+    <LinearLayout
+            android:id="@+id/styleManagementInfo"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:paddingHorizontal="14dp"
-            android:paddingVertical="12dp"
-            android:background="@drawable/bg_alert_warning"
-            android:text="Built-in styles can't be edited directly\nMake a copy to customize it"
-            android:textColor="#FFD54F"
-            android:textSize="14sp"
-            android:lineSpacingExtra="2dp"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
             android:gravity="center"
-            android:drawablePadding="8dp"
-            android:visibility="gone"
-            tools:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@id/styleType"
+            app:layout_constraintTop_toBottomOf="@id/styleName"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent">
 
+        <TextView
+                android:id="@+id/styleType"
+                android:layout_width="112dp"
+                android:layout_height="27dp"
+                android:gravity="center"
+                android:text="Style Type?"
+                android:textColor="#A4A3A3"
+                android:textSize="18sp" />
+
+        <ImageView
+                android:id="@+id/managedStyleIndicator"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:layout_marginStart="-8dp"
+                android:layout_marginTop="2dp"
+                android:visibility="gone"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_forward"
+                app:tint="#FFFFFF"
+                android:contentDescription="Manage updates" />
+
+    </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView
-            android:id="@+id/editButton"
+            android:id="@+id/optionsButton"
             android:layout_width="match_parent"
             android:layout_height="38dp"
             android:layout_marginTop="16dp"
@@ -67,7 +67,56 @@
             app:cardElevation="0dp"
             app:strokeColor="#292828"
             app:strokeWidth="1dp"
-            app:layout_constraintTop_toBottomOf="@id/builtInStyleAlert"
+            app:layout_constraintTop_toBottomOf="@id/styleManagementInfo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <ImageView
+                    android:id="@+id/optionsIcon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/ic_sliders"
+                    app:tint="#A4A3A3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+            <TextView
+                    android:id="@+id/optionsBtnText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Options"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+            android:id="@+id/editButton"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:layout_marginTop="6dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            app:cardBackgroundColor="#1B1A1A"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#292828"
+            app:strokeWidth="1dp"
+            app:layout_constraintTop_toBottomOf="@id/optionsButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -130,7 +179,7 @@
                     android:layout_height="30dp"
                     android:layout_marginStart="16dp"
                     android:src="@drawable/ic_copy"
-                    app:tint="#A4A3A3"
+                    app:tint="#6d6c6c"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent" />
@@ -240,57 +289,6 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Delete style"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-
-    <com.google.android.material.card.MaterialCardView
-            android:id="@+id/closeButton"
-            android:layout_width="match_parent"
-            android:layout_height="38dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="10dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
-            app:cardBackgroundColor="#1B1A1A"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="0dp"
-            app:strokeColor="#292828"
-            app:strokeWidth="1dp"
-            app:layout_constraintTop_toBottomOf="@id/deleteButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            <ImageView
-                    android:id="@+id/closeIcon"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="16dp"
-                    android:src="@android:drawable/ic_menu_more"
-                    app:tint="#A4A3A3"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
-
-            <TextView
-                    android:id="@+id/closeText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Close"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp"
                     app:layout_constraintTop_toTopOf="parent"

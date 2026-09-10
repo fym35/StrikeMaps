@@ -15,6 +15,7 @@ import eu.konggdev.strikemaps.app.AppController;
 import eu.konggdev.strikemaps.app.util.JsonPatcher;
 import eu.konggdev.strikemaps.map.MapComponent;
 import eu.konggdev.strikemaps.map.style.MapStyle;
+import eu.konggdev.strikemaps.map.style.management.StyleManagementMetadata;
 import eu.konggdev.strikemaps.map.style.options.StyleOptions;
 import eu.konggdev.strikemaps.ui.UIComponent;
 import eu.konggdev.strikemaps.ui.element.item.PreviewItem;
@@ -24,9 +25,36 @@ import org.maplibre.geojson.Feature;
 import java.util.List;
 import java.util.function.Consumer;
 
-
 //FIXME: Cleaner architecture would be having a class for each AlertDialog type
 public final class AlertDialogFactory {
+    public static AlertDialog styleManagementOptions(
+            AppController app,
+            StyleManagementMetadata metadata
+    ) {
+        String[] options = {
+                "Update style",
+                "Update automatically"
+        };
+
+        boolean[] checked = {
+                metadata.doUpdates,
+                metadata.autoUpdate
+        };
+
+        return new AlertDialog.Builder(app.getActivity())
+                .setTitle("Built-in Style")
+                .setMultiChoiceItems(options, checked, (dialog, which, isChecked) -> {
+                    if (which == 0) {
+                        metadata.doUpdates = isChecked;
+                    } else if (which == 1) {
+                        metadata.autoUpdate = isChecked;
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("OK", null)
+                .create();
+    }
+
     public static AlertDialog copyBuiltInStyle(AppController app, MapComponent map, UIComponent ui, FragmentMapChangePopup mapChangePopup) {
         //TODO: Use an UI element that's supposed to be vertical, instead of GenericItem
 
@@ -44,7 +72,6 @@ public final class AlertDialogFactory {
 
         return dialog;
     }
-
     public static AlertDialog createStyle(AppController app, String baseStyleContents, FragmentMapChangePopup mapChangePopup) {
         final EditText nameInput = new EditText(app.getActivity());
         nameInput.setHint("Name");

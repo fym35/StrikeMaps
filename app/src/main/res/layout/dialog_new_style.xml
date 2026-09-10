@@ -97,7 +97,7 @@
                     android:layout_height="30dp"
                     android:layout_marginStart="16dp"
                     android:src="@drawable/ic_file"
-                    app:tint="#A4A3A3"
+                    app:tint="#6d6c6c"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent" />
@@ -148,7 +148,7 @@
                     android:layout_height="30dp"
                     android:layout_marginStart="16dp"
                     android:src="@drawable/ic_create"
-                    app:tint="#A4A3A3"
+                    app:tint="#6d6c6c"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent" />
