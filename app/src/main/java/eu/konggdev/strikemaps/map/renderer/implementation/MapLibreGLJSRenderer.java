@@ -17,8 +17,8 @@ import eu.konggdev.strikemaps.app.util.JsonPatcher;
 import eu.konggdev.strikemaps.map.MapComponent;
 import eu.konggdev.strikemaps.map.overlay.MapOverlay;
 import eu.konggdev.strikemaps.map.renderer.MapRenderer;
-import eu.konggdev.strikemaps.map.source.MapSource;
 import eu.konggdev.strikemaps.map.style.document.StyleDocument;
+import eu.konggdev.strikemaps.map.style.source.StyleSource;
 import org.maplibre.android.geometry.LatLng;
 import org.maplibre.geojson.Feature;
 
@@ -72,8 +72,9 @@ public class MapLibreGLJSRenderer implements MapRenderer {
                 //Sources
                 ObjectNode sources = mapper.createObjectNode();
                 if (style.sources != null)
-                    for (MapSource source : style.sources)
-                        sources.set(source.name, source.makeJson());
+                    for (StyleSource source : style.sources)
+                        sources.set(source.key,
+                                    source.current.makeJson());
 
                 //Layers
                 ArrayNode layers = mapper.createArrayNode();

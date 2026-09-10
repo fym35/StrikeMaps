@@ -1,5 +1,6 @@
 package eu.konggdev.strikemaps.storage;
 
+import androidx.annotation.Nullable;
 import eu.konggdev.strikemaps.Component;
 import eu.konggdev.strikemaps.app.AppController;
 import eu.konggdev.strikemaps.map.source.MapSource;
@@ -7,6 +8,9 @@ import eu.konggdev.strikemaps.map.style.MapStyle;
 import eu.konggdev.strikemaps.helper.UserPrefsHelper;
 
 import java.util.Map;
+
+import eu.konggdev.strikemaps.map.style.management.StyleManagementMetadata;
+import org.apache.commons.codec.digest.DigestUtils;
 
 public class RegistryStorageComponent implements Component {
     private AppController app;
@@ -29,6 +33,10 @@ public class RegistryStorageComponent implements Component {
         return sources();
     }
 
+    @Nullable public MapSource getSource(Integer id) {
+        return sources().get(id);
+    }
+
     private Map<Integer, MapStyle> styles() {
         if (styles == null) styles = UserPrefsHelper.styles(app.getPrefs(), app);
         return styles;
@@ -38,7 +46,7 @@ public class RegistryStorageComponent implements Component {
         return styles();
     }
 
-    public MapStyle getStyle(Integer id) {
+    @Nullable public MapStyle getStyle(Integer id) {
         return styles().get(id);
     }
 

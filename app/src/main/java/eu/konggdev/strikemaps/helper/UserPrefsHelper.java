@@ -5,12 +5,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import eu.konggdev.strikemaps.app.AppController;
 import eu.konggdev.strikemaps.map.source.MapSource;
-import eu.konggdev.strikemaps.map.source.MapSource.MapSourceContractType;
-import eu.konggdev.strikemaps.map.source.model.TileSource;
+import eu.konggdev.strikemaps.map.source.tiles.SourceTiles;
 import eu.konggdev.strikemaps.map.style.MapStyle;
-import eu.konggdev.strikemaps.map.style.document.StyleDocument;
 import eu.konggdev.strikemaps.map.style.management.StyleManagementMetadata;
 import eu.konggdev.strikemaps.map.style.options.StyleOptions;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -36,11 +35,15 @@ public final class UserPrefsHelper {
     public static Map<Integer, MapStyle> DEFAULT_STYLES(AppController app) {
         Map<Integer, MapStyle> styles = new HashMap<>();
         String[] styleAssets = FileHelper.getAssetFiles("bundled/style", ".style.json", app);
-        for (int i = 0; i < styleAssets.length; i++) { styles.put( i,
+        for (int i = 0; i < styleAssets.length; i++) {
+            String styleContents = FileHelper.loadStringFromAssetFile(styleAssets[i], app);
+            styles.put( i,
                 new MapStyle(
-                        FileHelper.loadStringFromAssetFile(styleAssets[i], app),
+                        styleContents,
                         new StyleOptions(),
-                        new StyleManagementMetadata()
+                        new StyleManagementMetadata( //Set the style to automatically update from assets
+                                false, true, true,
+                                "assets://" + styleAssets[i], DigestUtils.sha256Hex(styleContents))
                 ));
         }
         return styles;
@@ -48,16 +51,14 @@ public final class UserPrefsHelper {
 
     private static final Map<Integer, MapSource> DEFAULT_SOURCES = Map.of(
             0, new MapSource(
-                    MapSourceContractType.DEFINITION,
                     "Strike Maps Planet",
-                    new TileSource("https://tiles.strikemaps.eu/planet"),
+                    new SourceTiles("https://tiles.strikemaps.eu/planet"),
                     "vector",
                     "smts"
             ),
             1, new MapSource(
-                    MapSourceContractType.DEFINITION,
                     "ArcGIS Imagery",
-                    new TileSource(new String[]{"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"}),
+                    new SourceTiles(new String[]{"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"}),
                     "raster",
                     "raster"
             )

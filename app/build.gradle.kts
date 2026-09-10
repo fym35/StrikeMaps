@@ -61,6 +61,7 @@ dependencies {
     implementation("com.caverock:androidsvg:1.4")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.15.0")
+    implementation("commons-codec:commons-codec:1.17.2")
     implementation("org.apache.commons:commons-lang3:3.14.0")
 
     testImplementation(libs.junit)

@@ -10,16 +10,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import eu.konggdev.strikemaps.app.util.JsonPatcher;
+import eu.konggdev.strikemaps.map.offline.OfflineTileResolver;
 import eu.konggdev.strikemaps.map.overlay.MapOverlay;
 import eu.konggdev.strikemaps.map.renderer.MapRenderer;
-import eu.konggdev.strikemaps.map.source.MapSource;
 import eu.konggdev.strikemaps.map.style.document.StyleDocument;
+import eu.konggdev.strikemaps.map.style.source.StyleSource;
 import org.maplibre.android.MapLibre;
 import org.maplibre.android.geometry.LatLng;
 import org.maplibre.android.maps.MapLibreMap;
 import org.maplibre.android.maps.MapView;
 import org.maplibre.android.maps.OnMapReadyCallback;
 import org.maplibre.android.maps.Style;
+import org.maplibre.android.module.http.HttpRequestUtil;
+import org.maplibre.android.offline.OfflineManager;
 import org.maplibre.geojson.Feature;
 
 import java.util.List;
@@ -39,7 +42,9 @@ public class MapLibreNativeRenderer implements MapRenderer, OnMapReadyCallback {
         this.controller = controller;
         MapLibre.getInstance(app.getActivity());
         this.mapView = new MapView(app.getActivity());
+        //TODO: Investigate if we might want to restore any savedInstanceState for MapLibre
         mapView.onCreate(null);
+        //We need this to get the onMapReady callback
         mapView.getMapAsync(this);
     }
 
@@ -56,8 +61,9 @@ public class MapLibreNativeRenderer implements MapRenderer, OnMapReadyCallback {
                 //Sources
                 ObjectNode sources = mapper.createObjectNode();
                 if (style.sources != null)
-                    for (MapSource source : style.sources)
-                        sources.set(source.name, source.makeJson());
+                    for (StyleSource source : style.sources)
+                        sources.set(source.key,
+                                    source.current.makeJson());
 
                 //Layers
                 ArrayNode layers = mapper.createArrayNode();

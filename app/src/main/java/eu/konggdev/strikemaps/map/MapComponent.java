@@ -22,7 +22,8 @@ public class MapComponent implements Component {
     private final MapRenderer mapRenderer;
     private final AppController app;
 
-    public MapStyle style;
+    public Integer styleId;
+
     public Map<Class<? extends MapOverlay>, MapOverlay> overlays = new HashMap<>();
 
     public MapComponent(AppController ref) {
@@ -48,9 +49,8 @@ public class MapComponent implements Component {
         return new FragmentLayoutContentMap(mapRenderer.getView());
     }
 
-    public void setStyle(MapStyle style) {
-        this.style = style;
-        mapRenderer.styleUpdate(style.effectiveDocument());
+    public void setStyle(Integer id) {
+        styleId = id;
     }
 
     public void switchOverlay(MapOverlay overlay) {
@@ -102,9 +102,7 @@ public class MapComponent implements Component {
 
     public void onMapInit() {
         setStyle(
-                app.getRegistry().getStyle(
-                        UserPrefsHelper.startupMapStyle(app.getPrefs())
-                )
+                UserPrefsHelper.startupMapStyle(app.getPrefs())
         );
     }
 }

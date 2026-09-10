@@ -1,27 +1,25 @@
 package eu.konggdev.strikemaps.map.style.document;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.konggdev.strikemaps.app.AppController;
-import eu.konggdev.strikemaps.helper.FileHelper;
 import eu.konggdev.strikemaps.map.source.MapSource;
 import eu.konggdev.strikemaps.map.style.options.StyleOptions;
+import eu.konggdev.strikemaps.map.style.source.StyleSource;
+import eu.konggdev.strikemaps.storage.RegistryStorageComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class StyleDocument {
-
     //Only local data
     public String name;
     public String icon;
 
     public JsonNode metadata; // everything except layers + sources
-    public List<MapSource> sources;
+    public List<StyleSource> sources;
     public ArrayNode layerDefinitions;  // "layers" array
 
     // Json constructor
@@ -35,9 +33,9 @@ public class StyleDocument {
             this.icon = root.path("icon").asText();
 
             JsonNode jsonSources = root.path("sources");
-            List<MapSource> sources = new ArrayList<>();
+            List<StyleSource> sources = new ArrayList<>();
             jsonSources.fields().forEachRemaining(entry -> {
-                sources.add(MapSource.fromJson(MapSource.MapSourceContractType.REQUEST, entry.getKey(), entry.getValue()));
+                 sources.add(new StyleSource(entry.getKey(), entry.getValue()));
             });
             this.sources = sources;
 
@@ -47,8 +45,8 @@ public class StyleDocument {
             metadata.remove("layers");
             metadata.remove("sources");
             this.metadata = metadata;
-
         } catch (Exception e) {
+            e.printStackTrace();
             throw new IllegalArgumentException("Invalid style document", e);
         }
     }
@@ -63,8 +61,16 @@ public class StyleDocument {
     }
 
     // The style that is presented to the renderer, with its options applied
-    public StyleDocument effectiveDocument(StyleOptions options) {
+    public StyleDocument effectiveDocument(StyleOptions options, RegistryStorageComponent registry) {
         StyleDocument result = new StyleDocument(this); //Copy
+        for (int i = 0; i < sources.size(); i++) {
+            StyleSource source = sources.get(i);
+            MapSource effectiveSource = registry.getSource(
+                    options.getInteger(source.key, 0)
+            );
+            if (effectiveSource != null) source.current = effectiveSource;
+        }
+
         for (JsonNode layer : result.layerDefinitions) {
             JsonNode option = layer.get("option");
 

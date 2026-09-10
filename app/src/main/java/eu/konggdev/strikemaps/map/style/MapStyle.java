@@ -2,9 +2,11 @@ package eu.konggdev.strikemaps.map.style;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import eu.konggdev.strikemaps.app.AppController;
 import eu.konggdev.strikemaps.map.style.document.StyleDocument;
 import eu.konggdev.strikemaps.map.style.management.StyleManagementMetadata;
 import eu.konggdev.strikemaps.map.style.options.StyleOptions;
+import eu.konggdev.strikemaps.storage.RegistryStorageComponent;
 
 public class MapStyle {
     public static final class StoredRepresentation {
@@ -20,13 +22,11 @@ public class MapStyle {
         }
 
         public MapStyle restore() {
-            MapStyle style = new MapStyle(
+            return new MapStyle(
                     json,
                     options,
                     managementMetadata
             );
-
-            return style;
         }
     }
 
@@ -38,7 +38,6 @@ public class MapStyle {
 
     // Original json representation of the style document, as we got it
     @NonNull public final String json;
-
 
     public MapStyle(@NonNull String json, @NonNull StyleOptions styleOptions, @Nullable StyleManagementMetadata managementMetadata) {
         this.json = json;
@@ -58,7 +57,7 @@ public class MapStyle {
          return new StoredRepresentation(json, options, managementMetadata);
     }
 
-    public StyleDocument effectiveDocument() {
-        return document.effectiveDocument(options);
+    public StyleDocument effectiveDocument(RegistryStorageComponent registry) {
+        return document.effectiveDocument(options, registry);
     }
 }

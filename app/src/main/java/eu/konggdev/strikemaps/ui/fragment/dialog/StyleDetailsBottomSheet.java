@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
@@ -18,6 +20,7 @@ import eu.konggdev.strikemaps.R;
 import eu.konggdev.strikemaps.app.AppController;
 import eu.konggdev.strikemaps.map.MapComponent;
 import eu.konggdev.strikemaps.map.style.MapStyle;
+import eu.konggdev.strikemaps.storage.RegistryStorageComponent;
 import eu.konggdev.strikemaps.ui.UIComponent;
 import eu.konggdev.strikemaps.ui.factory.AlertDialogFactory;
 import eu.konggdev.strikemaps.ui.fragment.popup.FragmentMapChangePopup;
@@ -33,15 +36,16 @@ public class StyleDetailsBottomSheet extends BottomSheetDialogFragment {
     @NonNull
     UIComponent ui;
     @NonNull
+    RegistryStorageComponent registry;
+    @NonNull
     final FragmentMapChangePopup mapChangePopup;
 
-    private final MapStyle style;
-    private final Integer id;
+    private final Integer styleId;
 
     private ActivityResultLauncher<Intent> exportLauncher;
 
     void deleteStyle() {
-        app.getRegistry().deleteStyle(id);
+        registry.deleteStyle(styleId);
 
         mapChangePopup.reloadStyles();
         dismiss();
@@ -54,13 +58,13 @@ public class StyleDetailsBottomSheet extends BottomSheetDialogFragment {
         exportLauncher.launch(intent);
     }
 
-    public StyleDetailsBottomSheet(AppController app, MapComponent map, UIComponent ui, FragmentMapChangePopup mapChangePopup, MapStyle style, Integer id) {
+    public StyleDetailsBottomSheet(AppController app, FragmentMapChangePopup mapChangePopup, Integer styleId) {
         this.app = app;
-        this.map = map;
-        this.ui = ui;
+        this.map = app.getMap();
+        this.ui = app.getUi();
+        this.registry = app.getRegistry();
         this.mapChangePopup = mapChangePopup;
-        this.style = style;
-        this.id = id;
+        this.styleId = styleId;
     }
 
     @Override
@@ -81,7 +85,8 @@ public class StyleDetailsBottomSheet extends BottomSheetDialogFragment {
                                              .openOutputStream(uri)) {
 
                             if (out != null) {
-                                out.write(style.json.getBytes());
+                                String styleJson = registry.getStyle(styleId).json;
+                                if (styleJson != null) out.write(styleJson.getBytes());
                             }
 
                         } catch (IOException e) {
@@ -96,20 +101,27 @@ public class StyleDetailsBottomSheet extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_style_details, container, false);
 
+        MapStyle style = registry.getStyle(styleId);
         TextView styleNameView = view.findViewById(R.id.styleName);
+        LinearLayout styleManagementInfo = view.findViewById(R.id.styleManagementInfo);
         TextView styleTypeView = view.findViewById(R.id.styleType);
+        ImageView managedStyleIndicator = view.findViewById(R.id.managedStyleIndicator);
 
-        TextView builtInStyleAlert = view.findViewById(R.id.builtInStyleAlert);
         MaterialCardView editButtonLayout = view.findViewById(R.id.editButton);
         MaterialCardView copyButtonLayout = view.findViewById(R.id.copyButton);
         MaterialCardView exportButtonLayout = view.findViewById(R.id.exportButton);
         MaterialCardView deleteButtonLayout = view.findViewById(R.id.deleteButton);
-        MaterialCardView closeButtonLayout = view.findViewById(R.id.closeButton);
-
         styleNameView.setText(style.document.name);
 
         if (style.managementMetadata != null) {
             styleTypeView.setText("Built-In Style");
+            managedStyleIndicator.setVisibility(View.VISIBLE);
+            styleManagementInfo.setOnClickListener(v ->
+                    ui.alert(
+                            AlertDialogFactory.styleManagementOptions(app, style.managementMetadata)
+                    )
+            );
+
         } else {
             styleTypeView.setText("User Style");
         }
@@ -118,7 +130,6 @@ public class StyleDetailsBottomSheet extends BottomSheetDialogFragment {
         copyButtonLayout.setOnClickListener(v -> ui.alert(AlertDialogFactory.createStyle(app, style.json, mapChangePopup)));
         exportButtonLayout.setOnClickListener(v -> showExportDialog());
         deleteButtonLayout.setOnClickListener(v -> deleteStyle());
-        closeButtonLayout.setOnClickListener(v -> dismiss());
 
         return view;
     }

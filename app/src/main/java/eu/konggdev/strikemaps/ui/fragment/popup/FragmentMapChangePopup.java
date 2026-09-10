@@ -18,17 +18,20 @@ import eu.konggdev.strikemaps.app.AppController;
 import eu.konggdev.strikemaps.map.MapComponent;
 
 import eu.konggdev.strikemaps.map.style.MapStyle;
+import eu.konggdev.strikemaps.storage.RegistryStorageComponent;
 import eu.konggdev.strikemaps.ui.UIComponent;
 import eu.konggdev.strikemaps.ui.fragment.dialog.NewStyleBottomSheet;
 import eu.konggdev.strikemaps.ui.fragment.dialog.StyleDetailsBottomSheet;
 import eu.konggdev.strikemaps.ui.element.item.GenericItem;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class FragmentMapChangePopup extends Fragment implements Popup {
     @NonNull AppController app;
     @NonNull MapComponent map;
     @NonNull UIComponent ui;
+    @NonNull RegistryStorageComponent registry;
 
     private final Integer region;
 
@@ -49,11 +52,13 @@ public class FragmentMapChangePopup extends Fragment implements Popup {
     public void reloadStyles() {
         LinearLayout stylesLayout = view.findViewById(R.id.stylesLayout);
         stylesLayout.removeAllViews();
-        app.getRegistry().getStyles().forEach((id, style) ->
-                stylesLayout.addView(GenericItem.fromStyle(style.document, app,
-                        () -> map.setStyle(style),
-                        () -> this.styleDetails(style, id)).makeView(ui))
-        );
+        app.getRegistry().getStyles().forEach((id, style) -> {
+            View item = new GenericItem(
+                    style.document,
+                    app,
+                    () -> this.setStyle(id),
+                    () -> this.styleDetails(id)).makeView(ui);
+        });
         Bitmap addNewIcon = BitmapFactory.decodeResource(app.getActivity().getResources(), android.R.drawable.ic_menu_add);
         stylesLayout.addView(new GenericItem("",
                 addNewIcon,
@@ -90,8 +95,13 @@ public class FragmentMapChangePopup extends Fragment implements Popup {
         new NewStyleBottomSheet(app, map, ui, this).show(app.getActivity().getSupportFragmentManager(), "NewStyleBottomSheet");
     }
 
-    void styleDetails(MapStyle entry, Integer id) {
-        new StyleDetailsBottomSheet(app, map, ui, this, entry, id).show(app.getActivity().getSupportFragmentManager(), "StyleDetailsBottomSheet");
+    void styleDetails(Integer id) {
+        new StyleDetailsBottomSheet(app, this, id).show(app.getActivity().getSupportFragmentManager(), "StyleDetailsBottomSheet");
+    }
+
+    void setStyle(Integer id) {
+        map.setStyle(id);
+        reloadStyles();
     }
 
     public FragmentMapChangePopup(AppController app, Integer region) {
@@ -99,6 +109,7 @@ public class FragmentMapChangePopup extends Fragment implements Popup {
         this.app = app;
         this.map = app.getMap();
         this.ui = app.getUi();
+        this.registry = app.getRegistry();
         this.region = region;
     }
 
