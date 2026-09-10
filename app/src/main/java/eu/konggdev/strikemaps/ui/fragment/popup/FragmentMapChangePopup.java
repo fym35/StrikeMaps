@@ -58,6 +58,9 @@ public class FragmentMapChangePopup extends Fragment implements Popup {
                     app,
                     () -> this.setStyle(id),
                     () -> this.styleDetails(id)).makeView(ui);
+            if (Objects.equals(map.styleId, id)) item.findViewById(R.id.indicator)
+                    .setVisibility(View.VISIBLE);
+            stylesLayout.addView(item);
         });
         Bitmap addNewIcon = BitmapFactory.decodeResource(app.getActivity().getResources(), android.R.drawable.ic_menu_add);
         stylesLayout.addView(new GenericItem("",
