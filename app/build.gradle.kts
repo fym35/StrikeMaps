@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "eu.konggdev.strikemaps"
-        minSdk = 24
+        minSdk = 23
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -53,7 +53,7 @@ dependencies {
     implementation("com.github.mapsforge.vtm:vtm-android:0.27.0")
     implementation("com.github.mapsforge.vtm:vtm-http:0.27.0")
     implementation ("com.github.mapsforge.vtm:vtm-android:0.27.0@jar")
-    runtimeOnly ("com.github.mapsforge.vtm:vtm-android:0.27.0:natives-armeabi-v7a@jar")
+    runtimeOnly("com.github.mapsforge.vtm:vtm-android:0.27.0:natives-armeabi-v7a@jar")
     runtimeOnly("com.github.mapsforge.vtm:vtm-android:0.27.0:natives-arm64-v8a@jar")
     runtimeOnly("com.github.mapsforge.vtm:vtm-android:0.27.0:natives-x86@jar")
     runtimeOnly("com.github.mapsforge.vtm:vtm-android:0.27.0:natives-x86_64@jar")
