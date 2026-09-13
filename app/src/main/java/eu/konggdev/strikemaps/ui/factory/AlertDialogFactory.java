@@ -8,11 +8,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.*;
+import androidx.appcompat.app.AppCompatActivity;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import eu.konggdev.strikemaps.app.AppController;
-import eu.konggdev.strikemaps.app.util.JsonPatcher;
+import eu.konggdev.strikemaps.app.ComponentHolderActivity;
+import eu.konggdev.strikemaps.storage.RegistryStorageComponent;
+import eu.konggdev.strikemaps.util.json.JsonPatcher;
 import eu.konggdev.strikemaps.map.MapComponent;
 import eu.konggdev.strikemaps.map.style.MapStyle;
 import eu.konggdev.strikemaps.map.style.management.StyleManagementMetadata;
@@ -27,10 +29,7 @@ import java.util.function.Consumer;
 
 //FIXME: Cleaner architecture would be having a class for each AlertDialog type
 public final class AlertDialogFactory {
-    public static AlertDialog styleManagementOptions(
-            AppController app,
-            StyleManagementMetadata metadata
-    ) {
+    public static AlertDialog styleManagementOptions(AppCompatActivity activity, StyleManagementMetadata metadata) {
         String[] options = {
                 "Update style",
                 "Update automatically"
@@ -41,7 +40,7 @@ public final class AlertDialogFactory {
                 metadata.autoUpdate
         };
 
-        return new AlertDialog.Builder(app.getActivity())
+        return new AlertDialog.Builder(activity)
                 .setTitle("Built-in Style")
                 .setMultiChoiceItems(options, checked, (dialog, which, isChecked) -> {
                     if (which == 0) {
@@ -55,16 +54,16 @@ public final class AlertDialogFactory {
                 .create();
     }
 
-    public static AlertDialog copyBuiltInStyle(AppController app, MapComponent map, UIComponent ui, FragmentMapChangePopup mapChangePopup) {
+    public static AlertDialog copyBuiltInStyle(AppCompatActivity activity, MapComponent map, UIComponent ui, FragmentMapChangePopup mapChangePopup) {
         //TODO: Use an UI element that's supposed to be vertical, instead of GenericItem
 
-        LinearLayout container = new LinearLayout(app.getActivity());
+        LinearLayout container = new LinearLayout(activity);
         container.setOrientation(LinearLayout.VERTICAL);
 
-        ScrollView scrollView = new ScrollView(app.getActivity());
+        ScrollView scrollView = new ScrollView(activity);
         scrollView.addView(container);
 
-        AlertDialog dialog = new AlertDialog.Builder(app.getActivity())
+        AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setTitle("Copy from")
                 .setView(scrollView)
                 .setNegativeButton("Cancel", null)
@@ -72,19 +71,20 @@ public final class AlertDialogFactory {
 
         return dialog;
     }
-    public static AlertDialog createStyle(AppController app, String baseStyleContents, FragmentMapChangePopup mapChangePopup) {
-        final EditText nameInput = new EditText(app.getActivity());
+
+    public static AlertDialog createStyle(AppCompatActivity activity, RegistryStorageComponent registry, String baseStyleContents, FragmentMapChangePopup mapChangePopup) {
+        final EditText nameInput = new EditText(activity);
         nameInput.setHint("Name");
 
-        LinearLayout container = new LinearLayout(app.getActivity());
+        LinearLayout container = new LinearLayout(activity);
         container.setOrientation(LinearLayout.VERTICAL);
 
-        int padding = (int) (20 * app.getActivity().getResources().getDisplayMetrics().density);
+        int padding = (int) (20 * activity.getResources().getDisplayMetrics().density);
         container.setPadding(padding, padding, padding, 0);
 
         container.addView(nameInput);
 
-        AlertDialog dialog = new AlertDialog.Builder(app.getActivity())
+        AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setTitle("Create")
                 .setView(container)
                 .setPositiveButton("Create", null)
@@ -95,12 +95,12 @@ public final class AlertDialogFactory {
             Button createButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
             createButton.setOnClickListener(v -> {
-                ObjectMapper mapper = new ObjectMapper();
+                ObjectMapper mactivityer = new ObjectMapper();
                 boolean nameEntryRequired = true;
                 String styleContentName = "";
                 if (baseStyleContents != null) {
                     try {
-                        JsonNode root = mapper.readTree(baseStyleContents);
+                        JsonNode root = mactivityer.readTree(baseStyleContents);
                         if (!root.path("name").asText().isEmpty()) {
                             nameEntryRequired = false; //We can take the name from the style
                             styleContentName = root.path("name").asText();
@@ -125,28 +125,28 @@ public final class AlertDialogFactory {
                     JsonNode root;
                     if(baseStyleContents != null) {
                         if(!baseStyleContents.isEmpty()) {
-                            root = mapper.readTree(baseStyleContents);
+                            root = mactivityer.readTree(baseStyleContents);
                         } else {
-                            root = mapper.createObjectNode();
+                            root = mactivityer.createObjectNode();
                         }
                     } else {
-                        root = mapper.createObjectNode();
+                        root = mactivityer.createObjectNode();
                     }
 
                     if (!root.path("name").asText().isEmpty()) {
-                        ObjectNode node = mapper.createObjectNode();
+                        ObjectNode node = mactivityer.createObjectNode();
                         node.put("name", name);
                         root = JsonPatcher.patch(root, node);
                     }
 
-                    app.getRegistry().addStyle(new MapStyle(
-                        mapper.writeValueAsString(root),
+                    registry.addStyle(new MapStyle(
+                        mactivityer.writeValueAsString(root),
                         new StyleOptions(),
                         null
                     ));
                     dialog.dismiss();
                 } catch (Exception e) {
-                    Toast.makeText(app.getActivity(), "Failed to create", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "Failed to create", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
 
@@ -157,20 +157,20 @@ public final class AlertDialogFactory {
         return dialog;
     }
 
-    public static AlertDialog pointSelector(AppController app, List<Feature> features, Consumer<Feature> callback) {
-        LinearLayout layout = new LinearLayout(app.getActivity());
+    public static AlertDialog pointSelector(ComponentHolderActivity activity, UIComponent ui, List<Feature> features, Consumer<Feature> callback) {
+        LinearLayout layout = new LinearLayout(activity);
         layout.setOrientation(LinearLayout.VERTICAL);
 
-        ScrollView scrollView = new ScrollView(app.getActivity());
+        ScrollView scrollView = new ScrollView(activity);
         scrollView.addView(layout);
 
-        AlertDialog dialog = new AlertDialog.Builder(app.getActivity())
+        AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setView(scrollView)
                 .create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#000000")));
 
         for (Feature feature : features) {
-            View itemView = PreviewItem.fromFeature(feature).makeView(app.getUi(), v -> {
+            View itemView = PreviewItem.fromFeature(feature).makeView(ui, v -> {
                 dialog.dismiss();
                 new Handler(Looper.getMainLooper())
                         .post(() -> callback.accept(feature));
@@ -181,30 +181,30 @@ public final class AlertDialogFactory {
         return dialog;
     }
 
-    public static AlertDialog searchSettings(AppController app) {
-        return new AlertDialog.Builder(app.getActivity())
+    public static AlertDialog searchSettings(AppCompatActivity activity) {
+        return new AlertDialog.Builder(activity)
                 .setTitle("Configure Search")
                 .setPositiveButton("OK", null)
                 .create();
     }
 
-    public static AlertDialog restartDialog(AppController app) {
-        return new AlertDialog.Builder(app.getActivity())
+    public static AlertDialog restartDialog(AppCompatActivity activity) {
+        return new AlertDialog.Builder(activity)
                 .setTitle("Restart required")
-                .setMessage("Restart the app to apply changes.")
+                .setMessage("Restart the activity to activityly changes.")
                 .setCancelable(false)
                 .setNegativeButton("Cancel", (d, w) -> {
-                    Toast.makeText(app.getActivity(),
-                            "Changes will be applied on next restart",
+                    Toast.makeText(activity,
+                            "Changes will be activitylied on next restart",
                             Toast.LENGTH_SHORT).show();
                     d.dismiss();
                 })
                 .setPositiveButton("Restart", (d, w) -> {
-                    Intent i = app.getActivity().getPackageManager()
-                            .getLaunchIntentForPackage(app.getActivity().getPackageName());
+                    Intent i = activity.getPackageManager()
+                            .getLaunchIntentForPackage(activity.getPackageName());
                     if (i != null) {
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        app.getActivity().startActivity(i);
+                        activity.startActivity(i);
                     }
                     Runtime.getRuntime().exit(0);
                 })

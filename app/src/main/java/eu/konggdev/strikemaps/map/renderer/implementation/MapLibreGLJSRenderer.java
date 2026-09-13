@@ -1,19 +1,20 @@
 package eu.konggdev.strikemaps.map.renderer.implementation;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import eu.konggdev.strikemaps.app.AppController;
-import eu.konggdev.strikemaps.app.util.JsonPatcher;
+import eu.konggdev.strikemaps.app.ComponentHolderActivity;
+import eu.konggdev.strikemaps.util.json.JsonPatcher;
 import eu.konggdev.strikemaps.map.MapComponent;
 import eu.konggdev.strikemaps.map.overlay.MapOverlay;
 import eu.konggdev.strikemaps.map.renderer.MapRenderer;
@@ -27,19 +28,20 @@ import java.util.List;
 
 //Stub for now
 public class MapLibreGLJSRenderer implements MapRenderer {
-    @NonNull AppController app;
+    private final static String TAG = "MapLibreGLJSRenderer";
+    private final AppCompatActivity activity;
 
-    @NonNull MapComponent controller;
+    private final MapComponent controller;
 
     final WebView webView;
 
     private JsonNode origin;
 
     @SuppressLint({"JavascriptInterface", "SetJavaScriptEnabled"})
-    public MapLibreGLJSRenderer(AppController app, MapComponent controller) {
-        this.app = app;
+    public MapLibreGLJSRenderer(ComponentHolderActivity activity, MapComponent controller) {
+        this.activity = activity;
         this.controller = controller;
-        webView = new WebView(app.getActivity());
+        webView = new WebView(activity);
         webView.setLayoutParams(
                 new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -86,7 +88,7 @@ public class MapLibreGLJSRenderer implements MapRenderer {
                 root.set("layers", layers);
                 this.origin = root;
             } catch (Exception e) {
-                app.logcat("Failed to parse style: " + style.name);
+                Log.e(TAG, "Failed to parse style: " + style.name);
                 e.printStackTrace();
             }
         }
@@ -96,7 +98,7 @@ public class MapLibreGLJSRenderer implements MapRenderer {
             webView.evaluateJavascript("map.setStyle(" + mapped + ", { diff: false });", null);
             webView.evaluateJavascript("map.redraw()", null); //Force redraw to make the style change visible
         } catch (Exception e) {
-            app.logcat("Failed to set style: " + style.name);
+            Log.e(TAG, "Failed to set style: " + style.name);
             e.printStackTrace();
         }
 
@@ -127,7 +129,7 @@ public class MapLibreGLJSRenderer implements MapRenderer {
                         webView.evaluateJavascript("map.setStyle(" + mapped + ", { diff: false });", null);
                         webView.evaluateJavascript("map.redraw()", null); //Force redraw to make the style change visible
                     } catch (Exception e) {
-                        app.logcat("Failed to patch overlay: " + overlay.toString());
+                        Log.e(TAG, "Failed to patch overlay: " + overlay.toString());
                         e.printStackTrace();
                     }
                 }

@@ -3,12 +3,13 @@ package eu.konggdev.strikemaps.helper;
 import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import eu.konggdev.strikemaps.app.AppController;
+import eu.konggdev.strikemaps.app.ComponentHolderActivity;
 import eu.konggdev.strikemaps.map.source.MapSource;
 import eu.konggdev.strikemaps.map.source.tiles.SourceTiles;
 import eu.konggdev.strikemaps.map.style.MapStyle;
 import eu.konggdev.strikemaps.map.style.management.StyleManagementMetadata;
 import eu.konggdev.strikemaps.map.style.options.StyleOptions;
+import eu.konggdev.strikemaps.util.file.FileTools;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.lang.reflect.Type;
@@ -32,11 +33,11 @@ public final class UserPrefsHelper {
     private static final boolean DEFAULT_PERSIST_LOCATION_ENABLED = true;
     private static final boolean DEFAULT_LAST_LOCATION_ENABLED = false;
 
-    public static Map<Integer, MapStyle> DEFAULT_STYLES(AppController app) {
+    public static Map<Integer, MapStyle> DEFAULT_STYLES(ComponentHolderActivity app) {
         Map<Integer, MapStyle> styles = new HashMap<>();
-        String[] styleAssets = FileHelper.getAssetFiles("bundled/style", ".style.json", app);
+        String[] styleAssets = FileTools.getAssetFiles("bundled/style", ".style.json", app);
         for (int i = 0; i < styleAssets.length; i++) {
-            String styleContents = FileHelper.loadStringFromAssetFile(styleAssets[i], app);
+            String styleContents = FileTools.loadStringFromAssetFile(styleAssets[i], app);
             styles.put( i,
                 new MapStyle(
                         styleContents,
@@ -92,7 +93,7 @@ public final class UserPrefsHelper {
         return prefs.edit().putBoolean(KEY_LAST_LOCATION_ENABLED, status).commit();
     }
 
-    public static Map<Integer, MapStyle> styles(SharedPreferences prefs, AppController app) {
+    public static Map<Integer, MapStyle> styles(SharedPreferences prefs, ComponentHolderActivity app) {
         String json = prefs.getString(KEY_STYLES, null);
         if (json == null) return DEFAULT_STYLES(app);
         Type type = new TypeToken<Map<Integer, MapStyle.StoredRepresentation>>() {}.getType();

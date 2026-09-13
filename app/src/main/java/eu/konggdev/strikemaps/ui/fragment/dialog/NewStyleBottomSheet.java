@@ -14,13 +14,15 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.card.MaterialCardView;
 import eu.konggdev.strikemaps.R;
-import eu.konggdev.strikemaps.app.AppController;
+import eu.konggdev.strikemaps.app.ComponentHolderActivity;
 import eu.konggdev.strikemaps.map.MapComponent;
 import eu.konggdev.strikemaps.map.style.MapStyle;
 import eu.konggdev.strikemaps.map.style.options.StyleOptions;
+import eu.konggdev.strikemaps.storage.RegistryStorageComponent;
 import eu.konggdev.strikemaps.ui.UIComponent;
 import eu.konggdev.strikemaps.ui.factory.AlertDialogFactory;
 import eu.konggdev.strikemaps.ui.fragment.popup.FragmentMapChangePopup;
@@ -30,11 +32,15 @@ import java.io.*;
 public class NewStyleBottomSheet extends BottomSheetDialogFragment {
     private final String styleBase = "{\"name\":\"None\"}";
 
-    @NonNull AppController app;
-    @NonNull MapComponent map;
-    @NonNull UIComponent ui;
-    @NonNull
-    FragmentMapChangePopup mapChangePopup;
+    private AppCompatActivity activity;
+
+    private MapComponent map;
+
+    private UIComponent ui;
+
+    private RegistryStorageComponent registry;
+
+    private FragmentMapChangePopup mapChangePopup;
 
     private final ActivityResultLauncher<Intent> importLauncher =
             registerForActivityResult(
@@ -72,15 +78,16 @@ public class NewStyleBottomSheet extends BottomSheetDialogFragment {
                                             String content = contentBuilder.toString();
 
                                             if (fileName != null && !fileName.endsWith(".style.json")) {
-                                                app.getUi().alert(
+                                                ui.alert(
                                                         AlertDialogFactory.createStyle(
-                                                                app,
+                                                                activity,
+                                                                registry,
                                                                 content,
                                                                 mapChangePopup
                                                         )
                                                 );
                                             } else {
-                                                app.getRegistry().addStyle(
+                                                registry.addStyle(
                                                         new MapStyle(
                                                                 content,
                                                                 new StyleOptions(),
@@ -108,10 +115,11 @@ public class NewStyleBottomSheet extends BottomSheetDialogFragment {
         importLauncher.launch(intent);
     }
 
-    public NewStyleBottomSheet(AppController app, MapComponent map, UIComponent ui, FragmentMapChangePopup mapChangePopup) {
-        this.app = app;
+    public NewStyleBottomSheet(AppCompatActivity activity, MapComponent map, UIComponent ui, RegistryStorageComponent registry, FragmentMapChangePopup mapChangePopup) {
+        this.activity = activity;
         this.map = map;
         this.ui = ui;
+        this.registry = registry;
         this.mapChangePopup = mapChangePopup;
     }
 
@@ -126,7 +134,7 @@ public class NewStyleBottomSheet extends BottomSheetDialogFragment {
         MaterialCardView emptyBtn = view.findViewById(R.id.buttonCreateEmpty);
 
         builtInBtn.setOnClickListener(v -> {
-            app.getUi().alert(AlertDialogFactory.copyBuiltInStyle(app, map, ui, mapChangePopup));
+            ui.alert(AlertDialogFactory.copyBuiltInStyle(activity, map, ui, mapChangePopup));
         });
 
         fileBtn.setOnClickListener(v -> {
@@ -134,7 +142,7 @@ public class NewStyleBottomSheet extends BottomSheetDialogFragment {
         });
 
         emptyBtn.setOnClickListener(v -> {
-            app.getUi().alert(AlertDialogFactory.createStyle(app, styleBase, mapChangePopup));
+            ui.alert(AlertDialogFactory.createStyle(activity, registry, styleBase, mapChangePopup));
         });
 
         return view;

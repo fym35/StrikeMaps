@@ -1,31 +1,32 @@
 package eu.konggdev.strikemaps.storage;
 
+import android.content.SharedPreferences;
 import androidx.annotation.Nullable;
 import eu.konggdev.strikemaps.Component;
-import eu.konggdev.strikemaps.app.AppController;
+import eu.konggdev.strikemaps.app.ComponentHolderActivity;
 import eu.konggdev.strikemaps.map.source.MapSource;
 import eu.konggdev.strikemaps.map.style.MapStyle;
 import eu.konggdev.strikemaps.helper.UserPrefsHelper;
 
 import java.util.Map;
 
-import eu.konggdev.strikemaps.map.style.management.StyleManagementMetadata;
-import org.apache.commons.codec.digest.DigestUtils;
-
 public class RegistryStorageComponent implements Component {
-    private AppController app;
+    private final ComponentHolderActivity activity;
+
+    private final SharedPreferences userPrefs;
 
     private Map<Integer, MapStyle> styles;
 
     private Map<Integer, MapSource> sources;
 
-    public RegistryStorageComponent(AppController app) {
-        this.app = app;
-        styles();
+    public RegistryStorageComponent(ComponentHolderActivity activity, SharedPreferences userPrefs) {
+        this.activity = activity;
+        this.userPrefs = userPrefs;
+        initAll();
     }
 
     private Map<Integer, MapSource> sources() {
-        if (sources == null) sources = UserPrefsHelper.sources(app.getPrefs());
+        if (sources == null) sources = UserPrefsHelper.sources(userPrefs);
         return sources;
     }
 
@@ -38,7 +39,7 @@ public class RegistryStorageComponent implements Component {
     }
 
     private Map<Integer, MapStyle> styles() {
-        if (styles == null) styles = UserPrefsHelper.styles(app.getPrefs(), app);
+        if (styles == null) styles = UserPrefsHelper.styles(userPrefs, activity);
         return styles;
     }
 
@@ -73,10 +74,14 @@ public class RegistryStorageComponent implements Component {
     }
 
     private void save() {
-        UserPrefsHelper.styles(app.getPrefs(), styles);
+        UserPrefsHelper.styles(userPrefs, styles);
     }
 
     public void checkForUpdates() {
         //
+    }
+
+    private void initAll() {
+        styles(); sources();
     }
 }

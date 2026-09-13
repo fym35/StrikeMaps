@@ -1,16 +1,17 @@
 package eu.konggdev.strikemaps.map.renderer.implementation;
 
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import androidx.appcompat.app.AppCompatActivity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import eu.konggdev.strikemaps.app.util.JsonPatcher;
-import eu.konggdev.strikemaps.map.offline.OfflineTileResolver;
+import eu.konggdev.strikemaps.util.json.JsonPatcher;
 import eu.konggdev.strikemaps.map.overlay.MapOverlay;
 import eu.konggdev.strikemaps.map.renderer.MapRenderer;
 import eu.konggdev.strikemaps.map.style.document.StyleDocument;
@@ -21,27 +22,26 @@ import org.maplibre.android.maps.MapLibreMap;
 import org.maplibre.android.maps.MapView;
 import org.maplibre.android.maps.OnMapReadyCallback;
 import org.maplibre.android.maps.Style;
-import org.maplibre.android.module.http.HttpRequestUtil;
-import org.maplibre.android.offline.OfflineManager;
 import org.maplibre.geojson.Feature;
 
 import java.util.List;
 
-import eu.konggdev.strikemaps.app.AppController;
+import eu.konggdev.strikemaps.app.ComponentHolderActivity;
 import eu.konggdev.strikemaps.map.MapComponent;
 
 public class MapLibreNativeRenderer implements MapRenderer, OnMapReadyCallback {
-    @NonNull AppController app;
-    @NonNull MapComponent controller;
+    private final static String TAG = "MapLibreNativeRenderer";
+    private final AppCompatActivity activity;
+    private final MapComponent controller;
     MapLibreMap map;
     final MapView mapView;
     private JsonNode origin;
 
-    public MapLibreNativeRenderer(AppController app, MapComponent controller) {
-        this.app = app;
+    public MapLibreNativeRenderer(ComponentHolderActivity activity, MapComponent controller) {
+        this.activity = activity;
         this.controller = controller;
-        MapLibre.getInstance(app.getActivity());
-        this.mapView = new MapView(app.getActivity());
+        MapLibre.getInstance(activity);
+        this.mapView = new MapView(activity);
         //TODO: Investigate if we might want to restore any savedInstanceState for MapLibre
         mapView.onCreate(null);
         //We need this to get the onMapReady callback
@@ -75,7 +75,7 @@ public class MapLibreNativeRenderer implements MapRenderer, OnMapReadyCallback {
                 root.set("layers", layers);
                 this.origin = root;
             } catch (Exception e) {
-                app.logcat("Failed to parse style: " + style.name);
+                Log.e(TAG, "Failed to parse style: " + style.name);
                 e.printStackTrace();
             }
         }
@@ -83,7 +83,7 @@ public class MapLibreNativeRenderer implements MapRenderer, OnMapReadyCallback {
         try {
             map.setStyle(new Style.Builder().fromJson(mapper.writeValueAsString(origin)));
         } catch (Exception e) {
-            app.logcat("Failed to set style: " + style.name);
+            Log.e(TAG, "Failed to set style: " + style.name);
             e.printStackTrace();
         }
 
@@ -115,7 +115,7 @@ public class MapLibreNativeRenderer implements MapRenderer, OnMapReadyCallback {
 
             map.setStyle(new Style.Builder().fromJson(mapper.writeValueAsString(merged)));
         } catch (Exception e) {
-            app.logcat("Failed to patch overlay: " + overlay.toString());
+            Log.e(TAG, "Failed to patch overlay: " + overlay.toString());
             e.printStackTrace();
         }
     }

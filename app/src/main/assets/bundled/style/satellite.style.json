@@ -3,7 +3,7 @@
   "name": "Satellite",
   "icon": "assets://satellite.bmp",
   "sources": {
-    "satelite": {
+    "imagery": {
       "type": "raster",
       "schema" : "raster",
       "tiles": [
@@ -17,9 +17,9 @@
   },
   "layers": [
     {
-      "id": "satelite",
+      "id": "background",
       "type": "raster",
-      "source": "satelite"
+      "source": "imagery"
     }
   ],
   "id": "satellite"

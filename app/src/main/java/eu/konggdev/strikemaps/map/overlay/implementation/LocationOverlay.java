@@ -3,8 +3,9 @@ package eu.konggdev.strikemaps.map.overlay.implementation;
 import android.location.Location;
 import android.location.LocationListener;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import com.fasterxml.jackson.databind.JsonNode;
-import eu.konggdev.strikemaps.app.AppController;
+import eu.konggdev.strikemaps.app.ComponentHolderActivity;
 import eu.konggdev.strikemaps.map.MapComponent;
 import eu.konggdev.strikemaps.map.overlay.MapOverlay;
 
@@ -16,15 +17,13 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class LocationOverlay implements MapOverlay, LocationListener {
     LocationDataProvider locationDataProvider;
-    AppController app;
     MapComponent map;
 
     public Location currentLocation = null;
 
-    public LocationOverlay(AppController app) {
-        this.app = app;
-        this.map = app.getMap();
-        this.locationDataProvider = new LocationDataProvider(app.getActivity(), this);
+    public LocationOverlay(MapComponent map, AppCompatActivity activity) {
+        this.map = map;
+        this.locationDataProvider = new LocationDataProvider(activity, this);
     }
 
 	@Override

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import eu.konggdev.strikemaps.app.AppController;
 import eu.konggdev.strikemaps.map.source.MapSource;
 import eu.konggdev.strikemaps.map.style.options.StyleOptions;
 import eu.konggdev.strikemaps.map.style.source.StyleSource;
@@ -69,24 +68,6 @@ public class StyleDocument {
                     options.getInteger(source.key, 0)
             );
             if (effectiveSource != null) source.current = effectiveSource;
-        }
-
-        for (JsonNode layer : result.layerDefinitions) {
-            JsonNode option = layer.get("option");
-
-            if (option == null)
-                continue;
-
-            if ("enable".equals(option.path("type").asText())) {
-                String id = layer.path("id").asText();
-
-                boolean enabled = options.getBoolean(
-                         id,
-                        option.path("default").asBoolean(true)
-                );
-
-
-            }
         }
 
         return result;

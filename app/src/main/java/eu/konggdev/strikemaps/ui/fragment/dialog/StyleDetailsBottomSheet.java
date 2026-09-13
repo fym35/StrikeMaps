@@ -14,10 +14,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.card.MaterialCardView;
 import eu.konggdev.strikemaps.R;
-import eu.konggdev.strikemaps.app.AppController;
+import eu.konggdev.strikemaps.app.ComponentHolderActivity;
 import eu.konggdev.strikemaps.map.MapComponent;
 import eu.konggdev.strikemaps.map.style.MapStyle;
 import eu.konggdev.strikemaps.storage.RegistryStorageComponent;
@@ -29,16 +30,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class StyleDetailsBottomSheet extends BottomSheetDialogFragment {
-    @NonNull
-    AppController app;
-    @NonNull
-    MapComponent map;
-    @NonNull
-    UIComponent ui;
-    @NonNull
-    RegistryStorageComponent registry;
-    @NonNull
-    final FragmentMapChangePopup mapChangePopup;
+    private final AppCompatActivity activity;
+
+    private final MapComponent map;
+
+    private final UIComponent ui;
+
+    private final RegistryStorageComponent registry;
+
+    private final FragmentMapChangePopup mapChangePopup;
 
     private final Integer styleId;
 
@@ -58,11 +58,11 @@ public class StyleDetailsBottomSheet extends BottomSheetDialogFragment {
         exportLauncher.launch(intent);
     }
 
-    public StyleDetailsBottomSheet(AppController app, FragmentMapChangePopup mapChangePopup, Integer styleId) {
-        this.app = app;
-        this.map = app.getMap();
-        this.ui = app.getUi();
-        this.registry = app.getRegistry();
+    public StyleDetailsBottomSheet(AppCompatActivity activity, MapComponent map, UIComponent ui, RegistryStorageComponent registry, FragmentMapChangePopup mapChangePopup, Integer styleId) {
+        this.activity = activity;
+        this.map = map;
+        this.ui = ui;
+        this.registry = registry;
         this.mapChangePopup = mapChangePopup;
         this.styleId = styleId;
     }
@@ -118,7 +118,7 @@ public class StyleDetailsBottomSheet extends BottomSheetDialogFragment {
             managedStyleIndicator.setVisibility(View.VISIBLE);
             styleManagementInfo.setOnClickListener(v ->
                     ui.alert(
-                            AlertDialogFactory.styleManagementOptions(app, style.managementMetadata)
+                            AlertDialogFactory.styleManagementOptions(activity, style.managementMetadata)
                     )
             );
 
@@ -127,7 +127,7 @@ public class StyleDetailsBottomSheet extends BottomSheetDialogFragment {
         }
 
         editButtonLayout.setOnClickListener(v -> Toast.makeText(requireContext(), "Editor not implemented yet\nWait for release", Toast.LENGTH_SHORT).show());
-        copyButtonLayout.setOnClickListener(v -> ui.alert(AlertDialogFactory.createStyle(app, style.json, mapChangePopup)));
+        copyButtonLayout.setOnClickListener(v -> ui.alert(AlertDialogFactory.createStyle(activity, registry, style.json, mapChangePopup)));
         exportButtonLayout.setOnClickListener(v -> showExportDialog());
         deleteButtonLayout.setOnClickListener(v -> deleteStyle());
 

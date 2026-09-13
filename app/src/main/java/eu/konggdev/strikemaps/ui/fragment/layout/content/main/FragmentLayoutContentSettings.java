@@ -1,5 +1,6 @@
 package eu.konggdev.strikemaps.ui.fragment.layout.content.main;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -7,21 +8,26 @@ import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import eu.konggdev.strikemaps.R;
 import eu.konggdev.strikemaps.helper.UserPrefsHelper;
-import eu.konggdev.strikemaps.app.AppController;
+import eu.konggdev.strikemaps.app.ComponentHolderActivity;
 import eu.konggdev.strikemaps.ui.UIComponent;
 import eu.konggdev.strikemaps.ui.factory.AlertDialogFactory;
 
 
 public class FragmentLayoutContentSettings extends Fragment implements MainContentLayout {
-    @NonNull AppController app;
-    @NonNull UIComponent ui;
-    public FragmentLayoutContentSettings(AppController app) {
+    private final AppCompatActivity activity;
+    private final UIComponent ui;
+
+    private final SharedPreferences userPrefs;
+
+    public FragmentLayoutContentSettings(AppCompatActivity activity, UIComponent ui, SharedPreferences userPrefs) {
         super(R.layout.fragment_settings);
-        this.app = app;
-        this.ui = app.getUi();
+        this.activity = activity;
+        this.ui = ui;
+        this.userPrefs = userPrefs;
     }
 
     @Override
@@ -39,7 +45,7 @@ public class FragmentLayoutContentSettings extends Fragment implements MainConte
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mapRendererSelector.setAdapter(adapter);
-        mapRendererSelector.setSelection(UserPrefsHelper.mapRenderer(app.getPrefs()));
+        mapRendererSelector.setSelection(UserPrefsHelper.mapRenderer(userPrefs));
         final boolean[] ignoreFirst = {true};
         mapRendererSelector.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
@@ -50,8 +56,8 @@ public class FragmentLayoutContentSettings extends Fragment implements MainConte
                             return;
                         }
 
-                        UserPrefsHelper.mapRenderer(app.getPrefs(), position);
-                        ui.alert(AlertDialogFactory.restartDialog(app));
+                        UserPrefsHelper.mapRenderer(userPrefs, position);
+                        ui.alert(AlertDialogFactory.restartDialog(activity));
                     }
 
                     @Override

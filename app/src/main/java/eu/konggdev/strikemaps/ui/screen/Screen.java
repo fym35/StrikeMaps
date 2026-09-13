@@ -1,23 +1,22 @@
 package eu.konggdev.strikemaps.ui.screen;
 
-import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.widget.Toolbar;
 
 import java.util.Map;
 
-import eu.konggdev.strikemaps.app.AppController;
+import eu.konggdev.strikemaps.app.ComponentHolderActivity;
 import eu.konggdev.strikemaps.ui.fragment.ContainerFragment;
 import eu.konggdev.strikemaps.ui.fragment.FragmentEmptyPlaceholder;
 import eu.konggdev.strikemaps.ui.fragment.popup.Popup;
 import eu.konggdev.strikemaps.ui.element.region.UIRegion;
 
 public class Screen {
-    @NonNull AppController app;
-    Toolbar toolbar;
-    public Screen(AppController app, Map<Integer, UIRegion> regions) {
-        this.app = app;
+    private final ComponentHolderActivity activity;
+
+    public Screen(ComponentHolderActivity activity, Map<Integer, UIRegion> regions) {
+        this.activity = activity;
         this.uiRegions = regions;
     }
     Map<Integer, UIRegion> uiRegions;
@@ -55,7 +54,7 @@ public class Screen {
     }
 
     public void fragmentTransaction(int layoutId, Fragment fragment) {
-        app.getActivity().getSupportFragmentManager()
+        activity.getSupportFragmentManager()
                 .beginTransaction()
                 .replace(layoutId, fragment)
                 .commit();

@@ -6,74 +6,71 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import eu.konggdev.strikemaps.R;
-import eu.konggdev.strikemaps.app.AppController;
-import eu.konggdev.strikemaps.helper.FileHelper;
-import eu.konggdev.strikemaps.map.MapComponent;
+import eu.konggdev.strikemaps.app.ComponentHolderActivity;
+import eu.konggdev.strikemaps.util.file.FileTools;
 import eu.konggdev.strikemaps.map.style.document.StyleDocument;
 import eu.konggdev.strikemaps.ui.UIComponent;
 
 public class GenericItem implements UIItem {
-    @NonNull public String name;
+    public String name;
+
     public Bitmap image;
     public Runnable onClick;
     public Runnable onLongClick;
     boolean hasImage;
 
-    public GenericItem(String refName) {
-        this.name = refName;
+    public GenericItem(String name) {
+        this.name = name;
         hasImage = false;
     }
-    public GenericItem(String refName, Runnable onClick) {
-        this.name = refName;
+
+    public GenericItem(String name, Runnable onClick) {
+        this.name = name;
         this.onClick = onClick;
         hasImage = false;
     }
-    public GenericItem(String refName, Runnable onClick, Runnable onLongClick) {
-        this.name = refName;
+
+    public GenericItem(String name, Runnable onClick, Runnable onLongClick) {
+        this.name = name;
         this.onClick = onClick;
         this.onLongClick = onLongClick;
         hasImage = false;
     }
-    public GenericItem(String refName, Bitmap refImage) {
-        this.name = refName;
-        this.image = refImage;
+
+    public GenericItem(String name, Bitmap Image) {
+        this.name = name;
+        this.image = Image;
         hasImage = true;
     }
-    public GenericItem(String refName, Bitmap refImage, Runnable onClick) {
-        this.name = refName;
-        this.image = refImage;
+
+    public GenericItem(String name, Bitmap Image, Runnable onClick) {
+        this.name = name;
+        this.image = Image;
         this.onClick = onClick;
         hasImage = true;
     }
 
-    public GenericItem(String refName, Bitmap refImage, Runnable onClick, Runnable onLongClick) {
-        this.name = refName;
-        this.image = refImage;
+    public GenericItem(String name, Bitmap Image, Runnable onClick, Runnable onLongClick) {
+        this.name = name;
+        this.image = Image;
         this.onClick = onClick;
         this.onLongClick = onLongClick;
         hasImage = true;
     }
 
-    public GenericItem(StyleDocument style, AppController app, Runnable onClick) {
-        if (style == null) {
-            this.name = "Unknown";
-            return;
-        }
-
+    public GenericItem(StyleDocument style, Runnable onClick, AppCompatActivity activity) {
+        if (style == null) return;
         this.name = style.name;
-        this.image = style.icon != null ? FileHelper.getIcon(style.icon, app) : null;
+        this.image = style.icon != null ? FileTools.getIcon(style.icon, activity) : null;
         this.onClick = onClick;
     }
 
-    public GenericItem(StyleDocument style, AppController app, Runnable onClick, Runnable onLongClick) {
-        if (style == null) {
-            this.name = "Unknown";
-            return;
-        }
-
+    public GenericItem(StyleDocument style, Runnable onClick, Runnable onLongClick, AppCompatActivity activity) {
+        if (style == null) return;
         this.name = style.name;
-        this.image = style.icon != null ? FileHelper.getIcon(style.icon, app) : null;
+        this.image = style.icon != null ? FileTools.getIcon(style.icon, activity) : null;
         this.onClick = onClick;
         this.onLongClick = onLongClick;
     }

@@ -2,7 +2,6 @@ package eu.konggdev.strikemaps.map.style;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import eu.konggdev.strikemaps.app.AppController;
 import eu.konggdev.strikemaps.map.style.document.StyleDocument;
 import eu.konggdev.strikemaps.map.style.management.StyleManagementMetadata;
 import eu.konggdev.strikemaps.map.style.options.StyleOptions;

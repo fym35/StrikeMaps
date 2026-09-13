@@ -1,7 +1,7 @@
 package eu.konggdev.strikemaps.map.renderer.implementation;
 
 import android.view.View;
-import eu.konggdev.strikemaps.app.AppController;
+import eu.konggdev.strikemaps.app.ComponentHolderActivity;
 import eu.konggdev.strikemaps.map.MapComponent;
 import eu.konggdev.strikemaps.map.overlay.MapOverlay;
 import eu.konggdev.strikemaps.map.renderer.MapRenderer;
@@ -19,16 +19,16 @@ import java.util.List;
 
 public class VtmRenderer implements MapRenderer {
 
-    AppController app;
+    ComponentHolderActivity activity;
     MapComponent controller;
 
     Map map;
     final MapView mapView;
 
-    public VtmRenderer(AppController app, MapComponent controller) {
-        this.app = app;
+    public VtmRenderer(ComponentHolderActivity activity, MapComponent controller) {
+        this.activity = activity;
         this.controller = controller;
-        this.mapView = new MapView(app.getActivity());
+        this.mapView = new MapView(activity);
         this.map = mapView.map();
     }
 

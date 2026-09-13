@@ -10,14 +10,14 @@ import android.view.View;
 
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import android.widget.LinearLayout;
 
 import eu.konggdev.strikemaps.R;
-import eu.konggdev.strikemaps.app.AppController;
+import eu.konggdev.strikemaps.app.ComponentHolderActivity;
 import eu.konggdev.strikemaps.map.MapComponent;
 
-import eu.konggdev.strikemaps.map.style.MapStyle;
 import eu.konggdev.strikemaps.storage.RegistryStorageComponent;
 import eu.konggdev.strikemaps.ui.UIComponent;
 import eu.konggdev.strikemaps.ui.fragment.dialog.NewStyleBottomSheet;
@@ -28,10 +28,10 @@ import java.util.Map;
 import java.util.Objects;
 
 public class FragmentMapChangePopup extends Fragment implements Popup {
-    @NonNull AppController app;
-    @NonNull MapComponent map;
-    @NonNull UIComponent ui;
-    @NonNull RegistryStorageComponent registry;
+    private final AppCompatActivity activity;
+    private final MapComponent map;
+    private final UIComponent ui;
+    private final RegistryStorageComponent registry;
 
     private final Integer region;
 
@@ -52,17 +52,16 @@ public class FragmentMapChangePopup extends Fragment implements Popup {
     public void reloadStyles() {
         LinearLayout stylesLayout = view.findViewById(R.id.stylesLayout);
         stylesLayout.removeAllViews();
-        app.getRegistry().getStyles().forEach((id, style) -> {
+        registry.getStyles().forEach((id, style) -> {
             View item = new GenericItem(
                     style.document,
-                    app,
                     () -> this.setStyle(id),
-                    () -> this.styleDetails(id)).makeView(ui);
+                    () -> this.styleDetails(id), activity).makeView(ui);
             if (Objects.equals(map.styleId, id)) item.findViewById(R.id.indicator)
                     .setVisibility(View.VISIBLE);
             stylesLayout.addView(item);
         });
-        Bitmap addNewIcon = BitmapFactory.decodeResource(app.getActivity().getResources(), android.R.drawable.ic_menu_add);
+        Bitmap addNewIcon = BitmapFactory.decodeResource(activity.getResources(), android.R.drawable.ic_menu_add);
         stylesLayout.addView(new GenericItem("",
                 addNewIcon,
                 this::newStyleFlow).makeView(ui));
@@ -95,11 +94,11 @@ public class FragmentMapChangePopup extends Fragment implements Popup {
     }
 
     void newStyleFlow() {
-        new NewStyleBottomSheet(app, map, ui, this).show(app.getActivity().getSupportFragmentManager(), "NewStyleBottomSheet");
+        new NewStyleBottomSheet(activity, map, ui, registry, this).show(activity.getSupportFragmentManager(), "NewStyleBottomSheet");
     }
 
     void styleDetails(Integer id) {
-        new StyleDetailsBottomSheet(app, this, id).show(app.getActivity().getSupportFragmentManager(), "StyleDetailsBottomSheet");
+        new StyleDetailsBottomSheet(activity, map, ui, registry, this, id).show(activity.getSupportFragmentManager(), "StyleDetailsBottomSheet");
     }
 
     void setStyle(Integer id) {
@@ -107,12 +106,12 @@ public class FragmentMapChangePopup extends Fragment implements Popup {
         reloadStyles();
     }
 
-    public FragmentMapChangePopup(AppController app, Integer region) {
+    public FragmentMapChangePopup(AppCompatActivity activity, UIComponent ui, MapComponent map, RegistryStorageComponent registry, Integer region) {
         super(R.layout.popup_map_change);
-        this.app = app;
-        this.map = app.getMap();
-        this.ui = app.getUi();
-        this.registry = app.getRegistry();
+        this.activity = activity;
+        this.ui = ui;
+        this.map = map;
+        this.registry = registry;
         this.region = region;
     }
 
