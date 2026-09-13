@@ -1,6 +1,8 @@
 package eu.konggdev.strikemaps.activity;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import androidx.activity.OnBackPressedCallback;
 import eu.konggdev.strikemaps.Component;
 import eu.konggdev.strikemaps.R;
 import eu.konggdev.strikemaps.app.ComponentHolderActivity;
@@ -35,11 +37,14 @@ public class MainActivity extends ComponentHolderActivity {
         super.onCreate(savedInstanceState);
         components = initComponents();
         setContentView(R.layout.view_main);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (ui.back())
-            super.onBackPressed();
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (ui.back()) {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                }
+            }
+        });
     }
 }
