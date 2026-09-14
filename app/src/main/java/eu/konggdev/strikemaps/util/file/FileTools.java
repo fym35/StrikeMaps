@@ -7,26 +7,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.util.Log;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import androidx.appcompat.app.AppCompatActivity;
 
 //FIXME: Ugly
 public final class FileTools {
-    private static final String TAG = "FileUtils";
-
-    public static Bitmap getIcon(String iconLocator, AppCompatActivity activity) {
-        switch (iconLocator.split("//")[0]) {
-            //TODO: https
-            case "assets:":
-                return BitmapFactory.decodeStream(FileTools.openAssetStream("bundled/icon/" + iconLocator.split("//")[1], activity));
-            default:
-                Log.e(TAG, "Unimplemented icon locator space: " + iconLocator);
-                return null;
-        }
-    }
+    private static final String TAG = "FileTools";
 
     public static String loadStringFromAssetFile(String filePath, AppCompatActivity activity) {
         try (InputStream is = activity.getAssets().open(filePath)) {

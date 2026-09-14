@@ -5,13 +5,11 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import eu.konggdev.strikemaps.R;
-import eu.konggdev.strikemaps.app.ComponentHolderActivity;
-import eu.konggdev.strikemaps.util.file.FileTools;
 import eu.konggdev.strikemaps.map.style.document.StyleDocument;
 import eu.konggdev.strikemaps.ui.UIComponent;
+import eu.konggdev.strikemaps.util.icon.IconResolver;
 
 public class GenericItem implements UIItem {
     public String name;
@@ -63,14 +61,14 @@ public class GenericItem implements UIItem {
     public GenericItem(StyleDocument style, Runnable onClick, AppCompatActivity activity) {
         if (style == null) return;
         this.name = style.name;
-        this.image = style.icon != null ? FileTools.getIcon(style.icon, activity) : null;
+        this.image = style.icon != null ? IconResolver.getIcon(style.icon, activity) : null;
         this.onClick = onClick;
     }
 
     public GenericItem(StyleDocument style, Runnable onClick, Runnable onLongClick, AppCompatActivity activity) {
         if (style == null) return;
         this.name = style.name;
-        this.image = style.icon != null ? FileTools.getIcon(style.icon, activity) : null;
+        this.image = style.icon != null ? IconResolver.getIcon(style.icon, activity) : null;
         this.onClick = onClick;
         this.onLongClick = onLongClick;
     }
