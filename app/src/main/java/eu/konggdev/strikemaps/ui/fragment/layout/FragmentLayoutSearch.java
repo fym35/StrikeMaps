@@ -10,12 +10,9 @@ import android.widget.PopupWindow;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-
 import eu.konggdev.strikemaps.R;
-import eu.konggdev.strikemaps.app.ComponentHolderActivity;
 import eu.konggdev.strikemaps.ui.UIComponent;
 import eu.konggdev.strikemaps.ui.factory.AlertDialogFactory;
-import eu.konggdev.strikemaps.ui.screen.definition.DefinedScreen;
 
 public class FragmentLayoutSearch extends Fragment implements Layout {
     private final AppCompatActivity activity;
@@ -64,7 +61,7 @@ public class FragmentLayoutSearch extends Fragment implements Layout {
 
             setupButton(menuView, R.id.menuSettings, click(() -> {
                 popupWindow.dismiss();
-                ui.swapScreen(DefinedScreen.SETTINGS);
+                ui.swapScreen("settings");
             }));
 
             menuView.findViewById(R.id.menuSearchSettings).setOnClickListener(v -> popupWindow.dismiss());

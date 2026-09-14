@@ -8,12 +8,11 @@ import eu.konggdev.strikemaps.R;
 import eu.konggdev.strikemaps.app.ComponentHolderActivity;
 
 public class FragmentLayoutContentOfflineMaps extends Fragment implements MainContentLayout {
-    @NonNull
-    ComponentHolderActivity app;
+    private final ComponentHolderActivity activity;
 
-    public FragmentLayoutContentOfflineMaps(ComponentHolderActivity app) {
+    public FragmentLayoutContentOfflineMaps(ComponentHolderActivity activity) {
         super(R.layout.fragment_offline_maps);
-        this.app = app;
+        this.activity = activity;
     }
 
     @Override
@@ -28,6 +27,6 @@ public class FragmentLayoutContentOfflineMaps extends Fragment implements MainCo
 
 //        LinearLayout sourcesLayout = view.findViewById(R.id.llDownloadContainer);
 //        for (MapSource source : sources)
-//            sourcesLayout.addView(new InlineItem(source.name, () -> Toast.makeText(app.getActivity(), "Work in progress", Toast.LENGTH_SHORT).show()).makeView(app.getUi()));
+//            sourcesLayout.addView(new InlineItem(source.name, () -> Toast.makeText(activity.getActivity(), "Work in progress", Toast.LENGTH_SHORT).show()).makeView(app.getUi()));
     }
 }
